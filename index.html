@@ -3,235 +3,248 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flappy Apex - Desktop PC Edition</title>
-  <!-- Tailwind CSS for modern styling -->
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Firebase App & Firestore SDKs (CDN Version) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+  <title>Flappy Apex</title>
+
+  <!-- Monetag Vignette Banner Script (Zone 11996024) -->
+  <script>(function(s){s.dataset.zone='11996024',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+  <!-- Firebase App & Database SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       user-select: none;
-      background-color: #0b0f19;
     }
-    .font-orbitron {
-      font-family: 'Orbitron', sans-serif;
+
+    body {
+      background-color: #0f1115;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
     }
-    /* Custom Scrollbar for Leaderboard */
-    ::-webkit-scrollbar {
-      width: 6px;
+
+    /* Mobile / Non-PC Blocker Overlay */
+    #mobile-blocker {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #090a0f;
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
     }
-    ::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.6);
+
+    #mobile-blocker h1 {
+      color: #ff4655;
+      font-size: 28px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(56, 189, 248, 0.5);
-      border-radius: 3px;
+
+    #mobile-blocker p {
+      color: #a0a5b5;
+      font-size: 16px;
+      max-width: 400px;
+      line-height: 1.5;
+    }
+
+    /* Main Container */
+    #game-container {
+      position: relative;
+      width: 800px;
+      height: 500px;
+      border: 3px solid #1f2330;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      background: #141721;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* UI Overlay Screens */
+    .overlay-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 17, 21, 0.92);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .title {
+      font-size: 42px;
+      font-weight: 800;
+      color: #ff4655;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 15px rgba(255, 70, 85, 0.4);
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #8b92a5;
+      margin-bottom: 25px;
+    }
+
+    /* Auth & Login Inputs */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 280px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      padding: 12px 16px;
+      border-radius: 6px;
+      border: 2px solid #2a2e3d;
+      background: #0b0c10;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+      text-align: center;
+    }
+
+    input[type="text"]:focus {
+      border-color: #ff4655;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      background: #ff4655;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:hover {
+      background: #e03e4d;
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .error-msg {
+      color: #ff4655;
+      font-size: 14px;
+      margin-top: 8px;
+      min-height: 20px;
+    }
+
+    /* Leaderboard Drawer */
+    #leaderboard-box {
+      width: 280px;
+      max-height: 180px;
+      overflow-y: auto;
+      background: #0b0c10;
+      border: 1px solid #2a2e3d;
+      border-radius: 6px;
+      margin-top: 15px;
+      padding: 10px;
+    }
+
+    .lb-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 10px;
+      font-size: 14px;
+      border-bottom: 1px solid #1a1d26;
+    }
+
+    .lb-row:last-child {
+      border-bottom: none;
+    }
+
+    .lb-rank {
+      color: #ff4655;
+      font-weight: bold;
+    }
+
+    .lb-name {
+      color: #d1d5db;
+    }
+
+    .lb-score {
+      color: #4ade80;
+      font-weight: bold;
     }
   </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col items-center justify-center text-white">
+<body>
 
-  <!-- Mobile / Tablet Device Blocker (Desktop PC Only Enforcement) -->
-  <div id="mobile-blocker" class="hidden fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex-col items-center justify-center p-6 text-center">
-    <div class="max-w-md bg-slate-900 border border-sky-500/30 p-8 rounded-2xl shadow-2xl shadow-sky-500/10">
-      <div class="w-16 h-16 bg-sky-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-sky-400 text-3xl">💻</div>
-      <h2 class="font-orbitron text-2xl font-bold text-white mb-3">Desktop / PC Only</h2>
-      <p class="text-slate-300 text-sm leading-relaxed mb-6">
-        Flappy Apex is engineered strictly for desktop and laptop computers using mouse left-clicks, Spacebar, or Up Arrow keys. Phones and tablets are not supported.
-      </p>
-      <div class="inline-block px-4 py-2 bg-sky-500/20 text-sky-400 text-xs font-semibold rounded-lg border border-sky-500/30">
-        Please switch to a PC or Mac to play
-      </div>
-    </div>
+  <!-- Desktop Only Blocker Overlay -->
+  <div id="mobile-blocker">
+    <h1>Desktop / PC Only</h1>
+    <p>Flappy Apex is designed strictly for PC devices. Please open this link on a desktop or laptop computer to play.</p>
   </div>
 
   <!-- Main Game Container -->
-  <div class="relative w-full max-w-[1024px] aspect-[16/9] max-h-[85vh] bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-800 flex flex-col">
-    
-    <!-- Top HUD Header -->
-    <div id="game-header" class="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-4 pointer-events-none">
-      <!-- Score Display -->
-      <div id="score-display" class="hidden pointer-events-auto bg-slate-900/80 backdrop-blur border border-sky-500/30 px-4 py-2 rounded-xl shadow-lg flex items-center gap-3">
-        <span class="text-xs uppercase tracking-wider text-sky-400 font-orbitron font-bold">Score</span>
-        <span id="current-score" class="font-orbitron text-2xl font-black text-white">0</span>
-      </div>
-      <div id="score-spacer" class="w-24"></div>
+  <div id="game-container">
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
 
-      <!-- Action Buttons (Main Menu / Leaderboard / Sound) -->
-      <div class="flex items-center gap-2 pointer-events-auto">
-        <button id="header-menu-btn" onclick="returnToMenu()" class="hidden bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3 py-2 rounded-xl text-xs font-orbitron font-bold transition flex items-center gap-1.5 shadow-lg">
-          🏠 Main Menu
-        </button>
-        <button onclick="toggleLeaderboard()" class="bg-slate-800/90 hover:bg-slate-700 border border-sky-500/30 text-sky-400 px-3.5 py-2 rounded-xl text-xs font-orbitron font-bold transition flex items-center gap-1.5 shadow-lg">
-          🏆 Leaderboard
-        </button>
-        <button id="audio-toggle" onclick="toggleAudio()" class="bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-300 w-9 h-9 rounded-xl flex items-center justify-center text-sm transition shadow-lg">
-          🔊
-        </button>
+    <!-- Login / Registration Screen -->
+    <div id="login-screen" class="overlay-screen">
+      <div class="title">Flappy Apex</div>
+      <div class="subtitle">Enter a Unique Username to Claim Your Device Account</div>
+      <div class="input-group">
+        <input type="text" id="username-input" placeholder="Enter Username..." maxlength="15" autocomplete="off">
+        <button class="btn" onclick="registerUser()">Start Game</button>
       </div>
+      <div id="login-error" class="error-msg"></div>
     </div>
 
-    <!-- Canvas Layer -->
-    <canvas id="gameCanvas" class="w-full h-full block cursor-pointer"></canvas>
-
-    <!-- Start / Main Menu Screen Overlay -->
-    <div id="start-screen" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gradient-to-b from-sky-950/60 via-slate-950/80 to-slate-950/95 backdrop-blur-[2px] p-6">
+    <!-- Start / Game Over Screen -->
+    <div id="menu-screen" class="overlay-screen" style="display: none;">
+      <div class="title" id="menu-title">Flappy Apex</div>
+      <div class="subtitle" id="menu-subtitle">Press Space or Click to Jump!</div>
+      <button class="btn" onclick="startGame()">Play Game</button>
       
-      <!-- Title -->
-      <div class="text-center mb-6">
-        <h1 class="font-orbitron text-5xl md:text-6xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-white to-sky-200 drop-shadow-[0_4px_12px_rgba(56,189,248,0.3)]">
-          FLAPPY APEX
-        </h1>
-        <p class="text-sky-300/80 text-xs font-medium tracking-widest mt-2 uppercase">
-          Click Mouse • Spacebar • Up Arrow to Jump
-        </p>
-      </div>
-
-      <!-- Call Sign Input Card -->
-      <div class="bg-slate-900/90 border border-slate-700/80 p-6 rounded-2xl shadow-2xl w-full max-w-sm backdrop-blur-md">
-        <label class="block text-xs uppercase font-orbitron tracking-wider text-slate-400 mb-2">Pilot Call Sign</label>
-        <div class="relative mb-2">
-          <input type="text" id="callsign-input" maxlength="12" placeholder="Enter Call Sign..." value="ApexAce"
-            class="w-full bg-slate-950 border border-slate-700 focus:border-sky-500 rounded-xl px-4 py-3 text-white font-semibold text-sm outline-none transition tracking-wide shadow-inner">
-        </div>
-        <!-- Error Message Container -->
-        <div id="name-error" class="hidden text-rose-400 text-xs font-semibold mb-3 px-1">
-          Username already taken
-        </div>
-
-        <button onclick="checkAndStartFlight()" 
-          class="w-full bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-orbitron font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-rose-500/25 transition transform active:scale-[0.98] flex items-center justify-center gap-2">
-          ✈️ LAUNCH FLIGHT
-        </button>
-        <div class="flex justify-between items-center mt-4 text-xs text-slate-400 px-1">
-          <span id="best-score-display">🏆 Best Score: 0</span>
-          <span class="text-sky-400 font-medium">💻 PC Mouse & Keyboard</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Game Over Screen Overlay -->
-    <div id="gameover-screen" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md p-6">
-      <div class="bg-slate-900 border border-slate-700 p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center">
-        <h2 class="font-orbitron text-2xl font-bold text-rose-500 mb-1">MISSION FAILED</h2>
-        <p class="text-slate-400 text-xs mb-6">Your flight was terminated upon impact.</p>
-
-        <div class="bg-slate-950 rounded-xl p-4 mb-6 border border-slate-800 flex justify-around">
-          <div>
-            <div class="text-[10px] uppercase font-orbitron text-slate-500">Score</div>
-            <div id="final-score" class="font-orbitron text-2xl font-bold text-white">0</div>
-          </div>
-          <div class="w-[1px] bg-slate-800"></div>
-          <div>
-            <div class="text-[10px] uppercase font-orbitron text-slate-500">Best</div>
-            <div id="final-best" class="font-orbitron text-2xl font-bold text-sky-400">0</div>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-2.5">
-          <button onclick="restartFlight()" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-orbitron font-bold py-3 rounded-xl shadow-lg shadow-sky-500/25 transition">
-            🔄 PLAY AGAIN
-          </button>
-          <button onclick="returnToMenu()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-orbitron font-bold py-2.5 rounded-xl transition text-xs">
-            🏠 MAIN MENU
-          </button>
-        </div>
+      <div id="leaderboard-box">
+        <div style="text-align: center; font-size: 12px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase;">Top Pilot Leaderboard</div>
+        <div id="lb-list">Loading scores...</div>
       </div>
     </div>
-
-    <!-- Leaderboard Modal Drawer -->
-    <div id="leaderboard-modal" class="hidden absolute inset-0 z-40 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-6">
-      <div class="bg-slate-900 border border-sky-500/30 w-full max-w-md rounded-2xl shadow-2xl flex flex-col max-h-[80vh] overflow-hidden">
-        <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/50">
-          <div class="flex items-center gap-2">
-            <span class="text-xl">🏆</span>
-            <h3 class="font-orbitron font-bold text-base text-white">Global Pilot Rankings</h3>
-          </div>
-          <div class="flex items-center gap-2">
-            <button onclick="fetchLeaderboard()" class="text-xs bg-slate-800 hover:bg-slate-700 text-sky-400 font-orbitron px-2.5 py-1.5 rounded-lg border border-sky-500/20 transition flex items-center gap-1">
-              🔄 Refresh
-            </button>
-            <button onclick="toggleLeaderboard()" class="text-slate-400 hover:text-white text-sm font-bold px-2.5 py-1.5 bg-slate-800 rounded-lg">✕</button>
-          </div>
-        </div>
-        <div id="leaderboard-list" class="p-4 overflow-y-auto flex-1 space-y-2">
-          <div class="text-center text-slate-500 text-sm py-6">Connecting to Firebase network...</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bottom Subtle Footer Badge -->
-    <div class="absolute bottom-2 left-0 right-0 z-10 text-center pointer-events-none">
-      <span class="inline-block bg-slate-950/60 backdrop-blur border border-slate-800/80 text-[10px] font-orbitron tracking-widest text-slate-400 px-3 py-1 rounded-full">
-        🟢 DESKTOP EDITION • 60 FPS ENGINE
-      </span>
-    </div>
-
   </div>
 
-  <!-- Game Logic Script -->
   <script>
-    // --- FIREBASE CONFIGURATION ---
-    const firebaseConfig = {
-      apiKey: "AIzaSyBOYhgtv60QLR2n8L1Sg9fE_ZVL0Iv5wHI",
-      authDomain: "flappy-apex.firebaseapp.com",
-      projectId: "flappy-apex",
-      storageBucket: "flappy-apex.firebasestorage.app",
-      messagingSenderId: "1034019070150",
-      appId: "1:1034019070150:web:48bf395e8af6de249637c7",
-      measurementId: "G-6ZFCRY427W"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    // --- GAME ENGINE & STATE ---
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-
-    // Fixed internal resolution for consistent 16:9 gameplay physics
-    canvas.width = 1024;
-    canvas.height = 576;
-
-    let gameState = "MENU"; // MENU, PLAYING, GAMEOVER
-    let score = 0;
-    let bestScore = parseInt(localStorage.getItem("flappy_apex_best") || "0");
-    let pilotCallSign = "ApexAce";
-    let soundEnabled = true;
-
-    document.getElementById("best-score-display").innerText = `🏆 Best Score: ${bestScore}`;
-
-    // Bird (Apex Pilot) Object
-    let bird = {
-      x: 200,
-      y: 288,
-      radius: 22,
-      velocity: 0,
-      gravity: 0.38,
-      lift: -8.2,
-      rotation: 0
-    };
-
-    // Obstacles & Background Arrays
-    let pipes = [];
-    let clouds = [
-      { x: 100, y: 80, speed: 0.5, scale: 1 },
-      { x: 500, y: 150, speed: 0.7, scale: 0.8 },
-      { x: 850, y: 70, speed: 0.4, scale: 1.2 }
-    ];
-
-    let frameCount = 0;
-
-    // --- DEVICE CHECKER ---
+    // --- 1. DEVICE BLOCKER ENFORCEMENT ---
     function checkDevice() {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
       if (isMobile) {
@@ -241,447 +254,311 @@
       }
     }
     window.addEventListener("resize", checkDevice);
-    window.addEventListener("load", checkDevice);
+    checkDevice();
 
-    // --- INPUT CONTROLS ---
-    function triggerJump(e) {
-      if (e) {
-        if (e.target.closest('button') || e.target.closest('input') || e.target.closest('#leaderboard-modal')) return;
-      }
-      if (gameState === "PLAYING") {
-        bird.velocity = bird.lift;
-        playJumpSound();
-      }
+    // --- 2. FIREBASE CONFIGURATION & INITIALIZATION ---
+    // Note: Replace these config placeholders with your actual Firebase project credentials if needed.
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    let db = null;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+    } catch(e) {
+      console.warn("Firebase config not populated yet or running offline mode.");
     }
 
-    window.addEventListener("keydown", (e) => {
-      if (e.code === "Space" || e.code === "ArrowUp") {
-        e.preventDefault();
-        triggerJump();
-      }
-    });
-
-    canvas.addEventListener("mousedown", (e) => {
-      if (e.button === 0) {
-        triggerJump(e);
-      }
-    });
-
-    // --- NAVIGATION & UI FLOW ---
+    // Unique Device Fingerprint / Storage Key
     function getDeviceId() {
-      let deviceId = localStorage.getItem("flappy_apex_device_id");
-      if (!deviceId) {
-        deviceId = "dev_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now();
-        localStorage.setItem("flappy_apex_device_id", deviceId);
+      let devId = localStorage.getItem("flappy_apex_device_id");
+      if (!devId) {
+        devId = "DEV-" + Math.random().toString(36).substring(2, 11) + "-" + Date.now();
+        localStorage.setItem("flappy_apex_device_id", devId);
       }
-      return deviceId;
+      return devId;
     }
 
-    function checkAndStartFlight() {
-      const inputVal = document.getElementById("callsign-input").value.trim();
-      const errorEl = document.getElementById("name-error");
+    const currentDeviceId = getDeviceId();
+    let currentUsername = localStorage.getItem("flappy_apex_username") || null;
 
-      if (!inputVal) return;
+    // Fast-track user if already registered on this device
+    window.addEventListener("DOMContentLoaded", () => {
+      if (currentUsername) {
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("menu-screen").style.display = "flex";
+        loadLeaderboard();
+      }
+    });
 
-      const newDocId = inputVal.toLowerCase().replace(/[^a-z0-9]/g, '_');
-      const deviceId = getDeviceId();
-      const oldDocId = localStorage.getItem("flappy_apex_current_doc_id");
+    function registerUser() {
+      const input = document.getElementById("username-input").value.trim();
+      const errorDiv = document.getElementById("login-error");
+      errorDiv.innerText = "";
 
-      // Check Firebase to see if the name is taken by ANOTHER device
-      db.collection("leaderboard").doc(newDocId).get().then((doc) => {
-        if (doc.exists && doc.data().deviceId !== deviceId) {
-          // Name is taken by someone else! Show on-screen error.
-          errorEl.style.display = "block";
-        } else {
-          // Name is available or belongs to this device! Hide error and start.
-          errorEl.style.display = "none";
-          pilotCallSign = inputVal;
-          startFlight();
+      if (input.length < 3) {
+        errorDiv.innerText = "Username must be at least 3 characters.";
+        return;
+      }
+
+      if (!db) {
+        // Fallback offline mode
+        currentUsername = input;
+        localStorage.setItem("flappy_apex_username", currentUsername);
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("menu-screen").style.display = "flex";
+        return;
+      }
+
+      // Check unique username in Firebase
+      db.ref("users").orderByChild("usernameLower").equalTo(input.toLowerCase()).once("value", (snapshot) => {
+        if (snapshot.exists()) {
+          let takenByOther = false;
+          snapshot.forEach((child) => {
+            if (child.key !== currentDeviceId) {
+              takenByOther = true;
+            }
+          });
+
+          if (takenByOther) {
+            errorDiv.innerText = "Username already taken by another device!";
+            return;
+          }
         }
-      }).catch((err) => {
-        console.error("Error checking username:", err);
-        // Fallback: allow start if network glitch occurs
-        errorEl.style.display = "none";
-        pilotCallSign = inputVal;
-        startFlight();
+
+        // Register device ID to username
+        db.ref("users/" + currentDeviceId).set({
+          username: input,
+          usernameLower: input.toLowerCase(),
+          registeredAt: Date.now()
+        }).then(() => {
+          currentUsername = input;
+          localStorage.setItem("flappy_apex_username", currentUsername);
+          document.getElementById("login-screen").style.display = "none";
+          document.getElementById("menu-screen").style.display = "flex";
+          loadLeaderboard();
+        }).catch((err) => {
+          errorDiv.innerText = "Error saving profile. Try again.";
+        });
       });
     }
 
-    function startFlight() {
-      gameState = "PLAYING";
-      score = 0;
-      bird.y = canvas.height / 2;
+    function saveScore(score) {
+      if (!db || !currentUsername) return;
+      db.ref("leaderboard/" + currentDeviceId).once("value", (snapshot) => {
+        const existing = snapshot.val();
+        if (!existing || score > existing.score) {
+          db.ref("leaderboard/" + currentDeviceId).set({
+            username: currentUsername,
+            score: score,
+            timestamp: Date.now()
+          }).then(() => {
+            loadLeaderboard();
+          });
+        }
+      });
+    }
+
+    function loadLeaderboard() {
+      if (!db) {
+        document.getElementById("lb-list").innerHTML = "<div class='lb-row'><span>Offline Mode</span></div>";
+        return;
+      }
+
+      db.ref("leaderboard").orderByChild("score").limitToLast(10).once("value", (snapshot) => {
+        const listDiv = document.getElementById("lb-list");
+        listDiv.innerHTML = "";
+
+        let scores = [];
+        snapshot.forEach((child) => {
+          scores.push(child.val());
+        });
+        scores.reverse();
+
+        if (scores.length === 0) {
+          listDiv.innerHTML = "<div class='lb-row' style='justify-content:center; color:#6b7280;'>No highscores yet!</div>";
+          return;
+        }
+
+        scores.forEach((item, index) => {
+          const row = document.createElement("div");
+          row.className = "lb-row";
+          row.innerHTML = `
+            <span class="lb-rank">#${index + 1}</span>
+            <span class="lb-name">${escapeHtml(item.username)}</span>
+            <span class="lb-score">${item.score}</span>
+          `;
+          listDiv.appendChild(row);
+        });
+      });
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // --- 3. FLAPPY APEX GAME ENGINE ---
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let gameState = "MENU"; // MENU, PLAYING, GAMEOVER
+    let score = 0;
+    let frame = 0;
+
+    const bird = {
+      x: 120,
+      y: 250,
+      width: 32,
+      height: 32,
+      gravity: 0.45,
+      lift: -8.5,
+      velocity: 0
+    };
+
+    let pipes = [];
+    const pipeWidth = 60;
+    const pipeGap = 140;
+
+    function resetGame() {
+      bird.y = 250;
       bird.velocity = 0;
       pipes = [];
-      frameCount = 0;
-
-      document.getElementById("start-screen").style.display = "none";
-      document.getElementById("gameover-screen").style.display = "none";
-      document.getElementById("score-display").style.display = "flex";
-      document.getElementById("header-menu-btn").style.display = "flex";
-      document.getElementById("current-score").innerText = "0";
+      score = 0;
+      frame = 0;
     }
 
-    function returnToMenu() {
-      gameState = "MENU";
-      document.getElementById("start-screen").style.display = "flex";
-      document.getElementById("gameover-screen").style.display = "none";
-      document.getElementById("score-display").style.display = "none";
-      document.getElementById("header-menu-btn").style.display = "none";
-      document.getElementById("leaderboard-modal").style.display = "none";
-    }
-
-    function restartFlight() {
-      startFlight();
+    function startGame() {
+      resetGame();
+      gameState = "PLAYING";
+      document.getElementById("menu-screen").style.display = "none";
     }
 
     function gameOver() {
       gameState = "GAMEOVER";
-      document.getElementById("gameover-screen").style.display = "flex";
-      document.getElementById("final-score").innerText = score;
-      
-      if (score > bestScore) {
-        bestScore = score;
-        localStorage.setItem("flappy_apex_best", bestScore);
-        document.getElementById("best-score-display").innerText = `🏆 Best Score: ${bestScore}`;
-      }
-      document.getElementById("final-best").innerText = bestScore;
+      saveScore(score);
+      document.getElementById("menu-title").innerText = "Game Over";
+      document.getElementById("menu-subtitle").innerText = `Final Score: ${score}`;
+      document.getElementById("menu-screen").style.display = "flex";
+    }
 
-      // Submit Score to Firebase
-      if (score > 0) {
-        submitScoreToFirebase(pilotCallSign, score);
+    function jump() {
+      if (gameState === "PLAYING") {
+        bird.velocity = bird.lift;
       }
     }
 
-    function toggleLeaderboard() {
-      const modal = document.getElementById("leaderboard-modal");
-      if (modal.style.display === "flex") {
-        modal.style.display = "none";
-      } else {
-        modal.style.display = "flex";
-        fetchLeaderboard();
+    // Controls
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        jump();
       }
-    }
+    });
 
-    function toggleAudio() {
-      soundEnabled = !soundEnabled;
-      document.getElementById("audio-toggle").innerText = soundEnabled ? "🔊" : "🔇";
-    }
+    canvas.addEventListener("mousedown", () => {
+      jump();
+    });
 
-    // --- AUDIO SYNTHESIS ---
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playJumpSound() {
-      if (!soundEnabled) return;
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      let osc = audioCtx.createOscillator();
-      let gain = audioCtx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(320, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(580, audioCtx.currentTime + 0.08);
-      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.08);
-    }
-
-    function playScoreSound() {
-      if (!soundEnabled) return;
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      let osc = audioCtx.createOscillator();
-      let gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(584.37, audioCtx.currentTime); // D5
-      osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.06); // A5
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.15);
-    }
-
-    function playCrashSound() {
-      if (!soundEnabled) return;
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      let osc = audioCtx.createOscillator();
-      let gain = audioCtx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(140, audioCtx.currentTime);
-      osc.frequency.linearRampToValueAtTime(40, audioCtx.currentTime + 0.25);
-      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.25);
-    }
-
-    // --- FIREBASE DATABASE FUNCTIONS (Unique Usernames + Device Lock) ---
-    function submitScoreToFirebase(name, finalScore) {
-      const deviceId = getDeviceId();
-      const newDocId = name.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
-      const oldDocId = localStorage.getItem("flappy_apex_current_doc_id");
-
-      const newDocRef = db.collection("leaderboard").doc(newDocId);
-
-      newDocRef.get().then((doc) => {
-        if (doc.exists) {
-          const data = doc.data();
-          if (data.deviceId === deviceId) {
-            if (finalScore > data.score) {
-              newDocRef.update({
-                score: finalScore,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-              });
-            }
-          }
-        } else {
-          if (oldDocId && oldDocId !== newDocId) {
-            db.collection("leaderboard").doc(oldDocId).delete().catch(err => console.error("Error clearing old name:", err));
-          }
-
-          newDocRef.set({
-            name: name,
-            score: finalScore,
-            deviceId: deviceId,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          });
-
-          localStorage.setItem("flappy_apex_current_doc_id", newDocId);
-        }
-      }).catch(err => console.error("Firebase sync error:", err));
-    }
-
-    function fetchLeaderboard() {
-      const listEl = document.getElementById("leaderboard-list");
-      listEl.innerHTML = `<div class="text-center text-slate-400 text-sm py-6">Loading rankings...</div>`;
-
-      db.collection("leaderboard")
-        .orderBy("score", "desc")
-        .limit(10)
-        .get()
-        .then((querySnapshot) => {
-          if (querySnapshot.empty) {
-            listEl.innerHTML = `<div class="text-center text-slate-500 text-sm py-6">No flights recorded yet. Be the first!</div>`;
-            return;
-          }
-          let html = "";
-          let rank = 1;
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            let medalColor = "text-slate-400 bg-slate-800/50";
-            if (rank === 1) medalColor = "text-amber-400 bg-amber-500/10 border border-amber-500/30";
-            else if (rank === 2) medalColor = "text-slate-200 bg-slate-300/10 border border-slate-300/30";
-            else if (rank === 3) medalColor = "text-amber-600 bg-amber-700/10 border border-amber-600/30";
-
-            html += `
-              <div class="flex items-center justify-between p-3 rounded-xl ${medalColor} backdrop-blur">
-                <div class="flex items-center gap-3">
-                  <span class="font-orbitron font-bold text-sm w-6 text-center">#${rank}</span>
-                  <span class="font-semibold text-white text-sm tracking-wide">${escapeHtml(data.name || "Pilot")}</span>
-                </div>
-                <span class="font-orbitron font-black text-sky-400 text-base">${data.score}</span>
-              </div>
-            `;
-            rank++;
-          });
-          listEl.innerHTML = html;
-        })
-        .catch((error) => {
-          console.error("Firebase read error:", error);
-          listEl.innerHTML = `<div class="text-center text-rose-400 text-xs py-6">Failed to load leaderboard. Check Firebase rules & configuration.</div>`;
-        });
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
-
-    // --- GAME LOOP & PHYSICS ---
+    // Game Loop
     function update() {
-      clouds.forEach(cloud => {
-        cloud.x -= cloud.speed;
-        if (cloud.x < -150) cloud.x = canvas.width + 150;
-      });
-
       if (gameState !== "PLAYING") return;
 
-      frameCount++;
-
+      frame++;
       bird.velocity += bird.gravity;
       bird.y += bird.velocity;
-      bird.rotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 4, (bird.velocity / 12)));
 
-      if (bird.y + bird.radius >= canvas.height - 40) {
-        bird.y = canvas.height - 40 - bird.radius;
-        playCrashSound();
+      // Floor & Ceiling collision
+      if (bird.y + bird.height >= canvas.height || bird.y <= 0) {
         gameOver();
       }
-      if (bird.y - bird.radius <= 0) {
-        bird.y = bird.radius;
-        bird.velocity = 0;
-      }
 
-      if (frameCount % 110 === 0) {
-        let minHeight = 80;
-        let maxHeight = canvas.height - 240;
-        let topHeight = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
-        
+      // Pipe Spawning
+      if (frame % 90 === 0) {
+        const topHeight = Math.floor(Math.random() * (canvas.height - pipeGap - 100)) + 40;
         pipes.push({
           x: canvas.width,
-          topHeight: topHeight,
-          bottomY: topHeight + 180,
-          width: 76,
+          top: topHeight,
+          bottom: canvas.height - topHeight - pipeGap,
           passed: false
         });
       }
 
+      // Move Pipes & Check Collisions
       for (let i = pipes.length - 1; i >= 0; i--) {
-        pipes[i].x -= 3.2;
+        pipes[i].x -= 3;
 
-        let p = pipes[i];
+        // Collision Check
         if (
-          bird.x + bird.radius > p.x &&
-          bird.x - bird.radius < p.x + p.width &&
-          (bird.y - bird.radius < p.topHeight || bird.y + bird.radius > p.bottomY)
+          bird.x < pipes[i].x + pipeWidth &&
+          bird.x + bird.width > pipes[i].x &&
+          (bird.y < pipes[i].top || bird.y + bird.height > canvas.height - pipes[i].bottom)
         ) {
-          playCrashSound();
           gameOver();
         }
 
-        if (!p.passed && p.x + p.width < bird.x) {
-          p.passed = true;
-          score += 1;
-          document.getElementById("current-score").innerText = score;
-          playScoreSound();
+        // Score Increase
+        if (!pipes[i].passed && pipes[i].x + pipeWidth < bird.x) {
+          pipes[i].passed = true;
+          score++;
         }
 
-        if (p.x + p.width < -50) {
+        // Remove Off-Screen Pipes
+        if (pipes[i].x + pipeWidth < 0) {
           pipes.splice(i, 1);
         }
       }
     }
 
-    // --- RENDER ENGINE ---
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      let skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      skyGrad.addColorStop(0, "#0369a1");
-      skyGrad.addColorStop(0.5, "#0284c7");
-      skyGrad.addColorStop(1, "#38bdf8");
-      ctx.fillStyle = skyGrad;
+    function render() {
+      // Background
+      ctx.fillStyle = "#141721";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      clouds.forEach(cloud => {
-        ctx.fillStyle = "rgba(255, 255, 255, 0.22)";
+      // Draw Grid Line Accents
+      ctx.strokeStyle = "#1f2330";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 40) {
         ctx.beginPath();
-        ctx.arc(cloud.x, cloud.y, 40 * cloud.scale, 0, Math.PI * 2);
-        ctx.arc(cloud.x + 30 * cloud.scale, cloud.y - 15 * cloud.scale, 30 * cloud.scale, 0, Math.PI * 2);
-        ctx.arc(cloud.x + 65 * cloud.scale, cloud.y, 35 * cloud.scale, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      ctx.fillStyle = "#0c4a6e";
-      ctx.beginPath();
-      ctx.moveTo(0, canvas.height - 40);
-      ctx.lineTo(180, canvas.height - 240);
-      ctx.lineTo(380, canvas.height - 40);
-      ctx.lineTo(620, canvas.height - 210);
-      ctx.lineTo(880, canvas.height - 40);
-      ctx.lineTo(1024, canvas.height - 180);
-      ctx.lineTo(1024, canvas.height - 40);
-      ctx.closePath();
-      ctx.fill();
-
-      pipes.forEach(p => {
-        let pipeGrad = ctx.createLinearGradient(p.x, 0, p.x + p.width, 0);
-        pipeGrad.addColorStop(0, "#0f172a");
-        pipeGrad.addColorStop(0.5, "#334155");
-        pipeGrad.addColorStop(1, "#0f172a");
-
-        ctx.fillStyle = pipeGrad;
-        ctx.fillRect(p.x, 0, p.width, p.topHeight);
-        ctx.strokeStyle = "#38bdf8";
-        ctx.lineWidth = 3;
-        ctx.strokeRect(p.x, 0, p.width, p.topHeight);
-        ctx.fillStyle = "#0284c7";
-        ctx.fillRect(p.x - 4, p.topHeight - 20, p.width + 8, 20);
-
-        ctx.fillStyle = pipeGrad;
-        ctx.fillRect(p.x, p.bottomY, p.width, canvas.height - p.bottomY - 40);
-        ctx.strokeStyle = "#38bdf8";
-        ctx.strokeRect(p.x, p.bottomY, p.width, canvas.height - p.bottomY - 40);
-        ctx.fillStyle = "#0284c7";
-        ctx.fillRect(p.x - 4, p.bottomY, p.width + 8, 20);
-      });
-
-      ctx.fillStyle = "#065f46";
-      ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
-      ctx.fillStyle = "#10b981";
-      ctx.fillRect(0, canvas.height - 40, canvas.width, 6);
-
-      ctx.save();
-      ctx.translate(bird.x, bird.y);
-      ctx.rotate(bird.rotation);
-
-      if (gameState === "PLAYING" && bird.velocity < 0) {
-        ctx.fillStyle = "#f97316";
-        ctx.beginPath();
-        ctx.moveTo(-22, 0);
-        ctx.lineTo(-38, -5);
-        ctx.lineTo(-32, 5);
-        ctx.closePath();
-        ctx.fill();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
       }
 
-      let birdGrad = ctx.createRadialGradient(-4, -4, 2, 0, 0, bird.radius);
-      birdGrad.addColorStop(0, "#f43f5e");
-      birdGrad.addColorStop(0.7, "#e11d48");
-      birdGrad.addColorStop(1, "#9f1239");
-      
-      ctx.fillStyle = birdGrad;
-      ctx.beginPath();
-      ctx.arc(0, 0, bird.radius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = "#ffe4e6";
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
+      // Draw Pipes
+      pipes.forEach((p) => {
+        ctx.fillStyle = "#ff4655";
+        // Top Pipe
+        ctx.fillRect(p.x, 0, pipeWidth, p.top);
+        // Bottom Pipe
+        ctx.fillRect(p.x, canvas.height - p.bottom, pipeWidth, p.bottom);
+      });
 
-      ctx.fillStyle = "#fb7185";
-      ctx.beginPath();
-      ctx.ellipse(-4, 4, 10, 6, Math.PI / 6, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = "#0f172a";
-      ctx.beginPath();
-      ctx.arc(8, -4, 7, 0, Math.PI * 2);
-      ctx.fill();
+      // Draw Player (Apex Flyer Icon)
       ctx.fillStyle = "#38bdf8";
-      ctx.beginPath();
-      ctx.arc(10, -5, 2.5, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
 
-      ctx.fillStyle = "#fbbf24";
-      ctx.beginPath();
-      ctx.moveTo(18, -2);
-      ctx.lineTo(28, 2);
-      ctx.lineTo(18, 6);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.restore();
+      // Score Display
+      if (gameState === "PLAYING") {
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 28px 'Segoe UI', sans-serif";
+        ctx.fillText(`Score: ${score}`, 20, 40);
+      }
     }
 
-    function loop() {
+    function gameLoop() {
       update();
-      draw();
-      requestAnimationFrame(loop);
+      render();
+      requestAnimationFrame(gameLoop);
     }
 
-    loop();
+    requestAnimationFrame(gameLoop);
   </script>
 </body>
 </html>
