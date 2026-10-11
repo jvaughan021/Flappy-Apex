@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flappy Apex</title>
 
-  <!-- Monetag Vignette Banner Script (Zone 11996024) -->
-  <script>(function(s){s.dataset.zone='11996024',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+  <!-- Monetag Ad Script (Zone 11996011) -->
+  <script>(function(s){s.dataset.zone='11996011',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
   <!-- Firebase App & Database SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -257,7 +257,6 @@
     checkDevice();
 
     // --- 2. FIREBASE CONFIGURATION & INITIALIZATION ---
-    // Note: Replace these config placeholders with your actual Firebase project credentials if needed.
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -309,7 +308,6 @@
       }
 
       if (!db) {
-        // Fallback offline mode
         currentUsername = input;
         localStorage.setItem("flappy_apex_username", currentUsername);
         document.getElementById("login-screen").style.display = "none";
@@ -333,7 +331,6 @@
           }
         }
 
-        // Register device ID to username
         db.ref("users/" + currentDeviceId).set({
           username: input,
           usernameLower: input.toLowerCase(),
@@ -534,9 +531,7 @@
       // Draw Pipes
       pipes.forEach((p) => {
         ctx.fillStyle = "#ff4655";
-        // Top Pipe
         ctx.fillRect(p.x, 0, pipeWidth, p.top);
-        // Bottom Pipe
         ctx.fillRect(p.x, canvas.height - p.bottom, pipeWidth, p.bottom);
       });
 
