@@ -44,7 +44,7 @@
 </head>
 <body class="h-[100dvh] w-screen flex flex-col items-center justify-center text-white p-2 sm:p-4">
 
-  <!-- Main Game Container (Fully Responsive for Mobile & Desktop without squishing) -->
+  <!-- Main Game Container (Fully Responsive for Mobile & Desktop) -->
   <div class="relative w-full max-w-[1024px] aspect-[16/9] max-h-[calc(100vh-2rem)] sm:max-h-[85vh] bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-800 flex flex-col">
     
     <!-- Top HUD Header -->
@@ -111,12 +111,13 @@
     </div>
 
     <!-- Game Over Screen Overlay -->
-    <div id="gameover-screen" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md p-4 sm:p-6 overflow-y-auto">
-      <div class="bg-slate-900 border border-slate-700 p-4 sm:p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center">
+    <div id="gameover-screen" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md p-3 sm:p-6 overflow-y-auto">
+      <div class="bg-slate-900 border border-slate-700 p-4 sm:p-5 rounded-2xl shadow-2xl w-full max-w-sm text-center flex flex-col items-center">
         <h2 class="font-orbitron text-lg sm:text-2xl font-bold text-rose-500 mb-1">MISSION FAILED</h2>
-        <p class="text-slate-400 text-[11px] sm:text-xs mb-3 sm:mb-6">Your flight was terminated upon impact.</p>
+        <p class="text-slate-400 text-[11px] sm:text-xs mb-3">Your flight was terminated upon impact.</p>
 
-        <div class="bg-slate-950 rounded-xl p-3 sm:p-4 mb-3 sm:mb-6 border border-slate-800 flex justify-around">
+        <!-- Scores Display -->
+        <div class="bg-slate-950 rounded-xl p-2.5 sm:p-3 mb-3 border border-slate-800 flex justify-around w-full">
           <div>
             <div class="text-[9px] sm:text-[10px] uppercase font-orbitron text-slate-500">Score</div>
             <div id="final-score" class="font-orbitron text-lg sm:text-2xl font-bold text-white">0</div>
@@ -128,7 +129,22 @@
           </div>
         </div>
 
-        <div class="flex flex-col gap-2">
+        <!-- Ad Unit Container (Displays after game over) -->
+        <div class="w-full flex justify-center items-center my-2 min-h-[50px] overflow-hidden rounded-lg bg-slate-950/50 border border-slate-800/80 p-1">
+          <script>
+            atOptions = {
+              'key' : '2fc6105cfbc2ddf21ac8beb5a1a9ee30',
+              'format' : 'iframe',
+              'height' : 50,
+              'width' : 320,
+              'params' : {}
+            };
+          </script>
+          <script src="https://bauval.org/22/2fc6105cfbc2ddf21ac8beb5a1a9ee30"></script>
+        </div>
+
+        <!-- Restart Buttons -->
+        <div class="flex flex-col gap-2 w-full mt-1">
           <button onclick="restartFlight()" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-orbitron font-bold py-2.5 sm:py-3 rounded-xl shadow-lg shadow-sky-500/25 transition text-xs sm:text-sm">
             🔄 PLAY AGAIN
           </button>
