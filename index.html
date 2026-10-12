@@ -182,8 +182,10 @@
       measurementId: "G-6ZFCRY427W"
     };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    // Initialize Firebase with modular-compat safety check
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
     const db = firebase.firestore();
 
     // --- GAME ENGINE & STATE ---
@@ -352,53 +354,75 @@
     }
 
     // --- AUDIO SYNTHESIS ---
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
     function playJumpSound() {
       if (!soundEnabled) return;
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      let osc = audioCtx.createOscillator();
-      let gain = audioCtx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(320, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(580, audioCtx.currentTime + 0.08);
-      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.08);
+      try {
+        let ctxAudio = getAudioContext();
+        let osc = ctxAudio.createOscillator();
+        let gain = ctxAudio.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(320, ctxAudio.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(580, ctxAudio.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.12, ctxAudio.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, ctxAudio.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(ctxAudio.destination);
+        osc.start();
+        osc.stop(ctxAudio.currentTime + 0.08);
+      } catch (e) {
+        console.error("Audio error:", e);
+      }
     }
 
     function playScoreSound() {
       if (!soundEnabled) return;
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      let osc = audioCtx.createOscillator();
-      let gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(584.37, audioCtx.currentTime);
-      osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.06);
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.15);
+      try {
+        let ctxAudio = getAudioContext();
+        let osc = ctxAudio.createOscillator();
+        let gain = ctxAudio.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(584.37, ctxAudio.currentTime);
+        osc.frequency.setValueAtTime(880, ctxAudio.currentTime + 0.06);
+        gain.gain.setValueAtTime(0.1, ctxAudio.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, ctxAudio.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(ctxAudio.destination);
+        osc.start();
+        osc.stop(ctxAudio.currentTime + 0.15);
+      } catch (e) {
+        console.error("Audio error:", e);
+      }
     }
 
     function playCrashSound() {
       if (!soundEnabled) return;
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      let osc = audioCtx.createOscillator();
-      let gain = audioCtx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(140, audioCtx.currentTime);
-      osc.frequency.linearRampToValueAtTime(40, audioCtx.currentTime + 0.25);
-      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.25);
+      try {
+        let ctxAudio = getAudioContext();
+        let osc = ctxAudio.createOscillator();
+        let gain = ctxAudio.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, ctxAudio.currentTime);
+        osc.frequency.linearRampToValueAtTime(40, ctxAudio.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.2, ctxAudio.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, ctxAudio.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(ctxAudio.destination);
+        osc.start();
+        osc.stop(ctxAudio.currentTime + 0.25);
+      } catch (e) {
+        console.error("Audio error:", e);
+      }
     }
 
     // --- FIREBASE DATABASE FUNCTIONS ---
