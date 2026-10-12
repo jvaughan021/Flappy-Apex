@@ -2,16 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flappy Apex - Desktop PC Edition</title>
-  
-  <!-- Conditional Monetag Ad Script (Desktop Only Enforcement) -->
-  <script>
-    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-    if (!isMobileDevice) {
-      (function(s){s.dataset.zone='11996011',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
-    }
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Flappy Apex</title>
 
   <!-- Tailwind CSS for modern styling -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -27,7 +19,12 @@
     body {
       font-family: 'Inter', sans-serif;
       user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
       background-color: #0b0f19;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
     }
     .font-orbitron {
       font-family: 'Orbitron', sans-serif;
@@ -45,43 +42,29 @@
     }
   </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col items-center justify-center text-white">
+<body class="h-[100dvh] w-screen flex flex-col items-center justify-center text-white">
 
-  <!-- Mobile / Tablet Device Blocker (Desktop PC Only Enforcement) -->
-  <div id="mobile-blocker" class="hidden fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex-col items-center justify-center p-6 text-center">
-    <div class="max-w-md bg-slate-900 border border-sky-500/30 p-8 rounded-2xl shadow-2xl shadow-sky-500/10">
-      <div class="w-16 h-16 bg-sky-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-sky-400 text-3xl">💻</div>
-      <h2 class="font-orbitron text-2xl font-bold text-white mb-3">Desktop / PC Only</h2>
-      <p class="text-slate-300 text-sm leading-relaxed mb-6">
-        Flappy Apex is engineered strictly for desktop and laptop computers using mouse left-clicks, Spacebar, or Up Arrow keys. Phones and tablets are not supported.
-      </p>
-      <div class="inline-block px-4 py-2 bg-sky-500/20 text-sky-400 text-xs font-semibold rounded-lg border border-sky-500/30">
-        Please switch to a PC or Mac to play
-      </div>
-    </div>
-  </div>
-
-  <!-- Main Game Container -->
-  <div class="relative w-full max-w-[1024px] aspect-[16/9] max-h-[85vh] bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-800 flex flex-col">
+  <!-- Main Game Container (Fully Responsive for Mobile & Desktop) -->
+  <div class="relative w-full h-full sm:w-[95vw] sm:max-w-[1024px] sm:aspect-[16/9] sm:max-h-[85vh] bg-slate-900 sm:rounded-2xl shadow-2xl overflow-hidden border-0 sm:border border-slate-800 flex flex-col">
     
     <!-- Top HUD Header -->
-    <div id="game-header" class="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-4 pointer-events-none">
+    <div id="game-header" class="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-3 sm:p-4 pointer-events-none">
       <!-- Score Display -->
-      <div id="score-display" class="hidden pointer-events-auto bg-slate-900/80 backdrop-blur border border-sky-500/30 px-4 py-2 rounded-xl shadow-lg flex items-center gap-3">
-        <span class="text-xs uppercase tracking-wider text-sky-400 font-orbitron font-bold">Score</span>
-        <span id="current-score" class="font-orbitron text-2xl font-black text-white">0</span>
+      <div id="score-display" class="hidden pointer-events-auto bg-slate-900/80 backdrop-blur border border-sky-500/30 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-lg flex items-center gap-2 sm:gap-3">
+        <span class="text-[10px] sm:text-xs uppercase tracking-wider text-sky-400 font-orbitron font-bold">Score</span>
+        <span id="current-score" class="font-orbitron text-xl sm:text-2xl font-black text-white">0</span>
       </div>
-      <div id="score-spacer" class="w-24"></div>
+      <div id="score-spacer" class="w-20 sm:w-24"></div>
 
       <!-- Action Buttons (Main Menu / Leaderboard / Sound) -->
-      <div class="flex items-center gap-2 pointer-events-auto">
-        <button id="header-menu-btn" onclick="returnToMenu()" class="hidden bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3 py-2 rounded-xl text-xs font-orbitron font-bold transition flex items-center gap-1.5 shadow-lg">
-          🏠 Main Menu
+      <div class="flex items-center gap-1.5 sm:gap-2 pointer-events-auto">
+        <button id="header-menu-btn" onclick="returnToMenu()" class="hidden bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-orbitron font-bold transition flex items-center gap-1 shadow-lg">
+          🏠 Menu
         </button>
-        <button onclick="toggleLeaderboard()" class="bg-slate-800/90 hover:bg-slate-700 border border-sky-500/30 text-sky-400 px-3.5 py-2 rounded-xl text-xs font-orbitron font-bold transition flex items-center gap-1.5 shadow-lg">
-          🏆 Leaderboard
+        <button onclick="toggleLeaderboard()" class="bg-slate-800/90 hover:bg-slate-700 border border-sky-500/30 text-sky-400 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-orbitron font-bold transition flex items-center gap-1 shadow-lg">
+          🏆 Ranks
         </button>
-        <button id="audio-toggle" onclick="toggleAudio()" class="bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-300 w-9 h-9 rounded-xl flex items-center justify-center text-sm transition shadow-lg">
+        <button id="audio-toggle" onclick="toggleAudio()" class="bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-300 w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs sm:text-sm transition shadow-lg">
           🔊
         </button>
       </div>
@@ -91,24 +74,24 @@
     <canvas id="gameCanvas" class="w-full h-full block cursor-pointer"></canvas>
 
     <!-- Start / Main Menu Screen Overlay -->
-    <div id="start-screen" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gradient-to-b from-sky-950/60 via-slate-950/80 to-slate-950/95 backdrop-blur-[2px] p-6">
+    <div id="start-screen" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gradient-to-b from-sky-950/60 via-slate-950/80 to-slate-950/95 backdrop-blur-[2px] p-4 sm:p-6">
       
       <!-- Title -->
-      <div class="text-center mb-6">
-        <h1 class="font-orbitron text-5xl md:text-6xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-white to-sky-200 drop-shadow-[0_4px_12px_rgba(56,189,248,0.3)]">
+      <div class="text-center mb-4 sm:mb-6">
+        <h1 class="font-orbitron text-3xl sm:text-5xl md:text-6xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-white to-sky-200 drop-shadow-[0_4px_12px_rgba(56,189,248,0.3)]">
           FLAPPY APEX
         </h1>
-        <p class="text-sky-300/80 text-xs font-medium tracking-widest mt-2 uppercase">
-          Click Mouse • Spacebar • Up Arrow to Jump
+        <p class="text-sky-300/80 text-[10px] sm:text-xs font-medium tracking-widest mt-1 sm:mt-2 uppercase">
+          Tap Screen • Click Mouse • Spacebar to Jump
         </p>
       </div>
 
       <!-- Call Sign Input Card -->
-      <div class="bg-slate-900/90 border border-slate-700/80 p-6 rounded-2xl shadow-2xl w-full max-w-sm backdrop-blur-md">
-        <label class="block text-xs uppercase font-orbitron tracking-wider text-slate-400 mb-2">Pilot Call Sign</label>
+      <div class="bg-slate-900/95 border border-slate-700/80 p-4 sm:p-6 rounded-2xl shadow-2xl w-full max-w-sm backdrop-blur-md">
+        <label class="block text-[10px] sm:text-xs uppercase font-orbitron tracking-wider text-slate-400 mb-1.5 sm:mb-2">Pilot Call Sign</label>
         <div class="relative mb-2">
           <input type="text" id="callsign-input" maxlength="12" placeholder="Enter Call Sign..." value="ApexAce"
-            class="w-full bg-slate-950 border border-slate-700 focus:border-sky-500 rounded-xl px-4 py-3 text-white font-semibold text-sm outline-none transition tracking-wide shadow-inner">
+            class="w-full bg-slate-950 border border-slate-700 focus:border-sky-500 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white font-semibold text-xs sm:text-sm outline-none transition tracking-wide shadow-inner">
         </div>
         <!-- Error Message Container -->
         <div id="name-error" class="hidden text-rose-400 text-xs font-semibold mb-3 px-1">
@@ -116,40 +99,40 @@
         </div>
 
         <button onclick="checkAndStartFlight()" 
-          class="w-full bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-orbitron font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-rose-500/25 transition transform active:scale-[0.98] flex items-center justify-center gap-2">
+          class="w-full bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-orbitron font-bold py-3 sm:py-3.5 px-6 rounded-xl shadow-lg shadow-rose-500/25 transition transform active:scale-[0.98] flex items-center justify-center gap-2 text-xs sm:text-sm">
           ✈️ LAUNCH FLIGHT
         </button>
-        <div class="flex justify-between items-center mt-4 text-xs text-slate-400 px-1">
-          <span id="best-score-display">🏆 Best Score: 0</span>
-          <span class="text-sky-400 font-medium">💻 PC Mouse & Keyboard</span>
+        <div class="flex justify-between items-center mt-3 sm:mt-4 text-[10px] sm:text-xs text-slate-400 px-1">
+          <span id="best-score-display">🏆 Best: 0</span>
+          <span class="text-sky-400 font-medium">📱 Mobile & PC</span>
         </div>
       </div>
 
     </div>
 
     <!-- Game Over Screen Overlay -->
-    <div id="gameover-screen" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md p-6">
-      <div class="bg-slate-900 border border-slate-700 p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center">
-        <h2 class="font-orbitron text-2xl font-bold text-rose-500 mb-1">MISSION FAILED</h2>
-        <p class="text-slate-400 text-xs mb-6">Your flight was terminated upon impact.</p>
+    <div id="gameover-screen" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md p-4 sm:p-6">
+      <div class="bg-slate-900 border border-slate-700 p-5 sm:p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center">
+        <h2 class="font-orbitron text-xl sm:text-2xl font-bold text-rose-500 mb-1">MISSION FAILED</h2>
+        <p class="text-slate-400 text-[11px] sm:text-xs mb-4 sm:mb-6">Your flight was terminated upon impact.</p>
 
-        <div class="bg-slate-950 rounded-xl p-4 mb-6 border border-slate-800 flex justify-around">
+        <div class="bg-slate-950 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 border border-slate-800 flex justify-around">
           <div>
-            <div class="text-[10px] uppercase font-orbitron text-slate-500">Score</div>
-            <div id="final-score" class="font-orbitron text-2xl font-bold text-white">0</div>
+            <div class="text-[9px] sm:text-[10px] uppercase font-orbitron text-slate-500">Score</div>
+            <div id="final-score" class="font-orbitron text-xl sm:text-2xl font-bold text-white">0</div>
           </div>
           <div class="w-[1px] bg-slate-800"></div>
           <div>
-            <div class="text-[10px] uppercase font-orbitron text-slate-500">Best</div>
-            <div id="final-best" class="font-orbitron text-2xl font-bold text-sky-400">0</div>
+            <div class="text-[9px] sm:text-[10px] uppercase font-orbitron text-slate-500">Best</div>
+            <div id="final-best" class="font-orbitron text-xl sm:text-2xl font-bold text-sky-400">0</div>
           </div>
         </div>
 
-        <div class="flex flex-col gap-2.5">
-          <button onclick="restartFlight()" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-orbitron font-bold py-3 rounded-xl shadow-lg shadow-sky-500/25 transition">
+        <div class="flex flex-col gap-2">
+          <button onclick="restartFlight()" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-orbitron font-bold py-2.5 sm:py-3 rounded-xl shadow-lg shadow-sky-500/25 transition text-xs sm:text-sm">
             🔄 PLAY AGAIN
           </button>
-          <button onclick="returnToMenu()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-orbitron font-bold py-2.5 rounded-xl transition text-xs">
+          <button onclick="returnToMenu()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-orbitron font-bold py-2 sm:py-2.5 rounded-xl transition text-[11px] sm:text-xs">
             🏠 MAIN MENU
           </button>
         </div>
@@ -157,30 +140,30 @@
     </div>
 
     <!-- Leaderboard Modal Drawer -->
-    <div id="leaderboard-modal" class="hidden absolute inset-0 z-40 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-6">
+    <div id="leaderboard-modal" class="hidden absolute inset-0 z-40 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6">
       <div class="bg-slate-900 border border-sky-500/30 w-full max-w-md rounded-2xl shadow-2xl flex flex-col max-h-[80vh] overflow-hidden">
-        <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/50">
+        <div class="p-3 sm:p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/50">
           <div class="flex items-center gap-2">
-            <span class="text-xl">🏆</span>
-            <h3 class="font-orbitron font-bold text-base text-white">Global Pilot Rankings</h3>
+            <span class="text-lg sm:text-xl">🏆</span>
+            <h3 class="font-orbitron font-bold text-sm sm:text-base text-white">Global Pilot Rankings</h3>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="fetchLeaderboard()" class="text-xs bg-slate-800 hover:bg-slate-700 text-sky-400 font-orbitron px-2.5 py-1.5 rounded-lg border border-sky-500/20 transition flex items-center gap-1">
+            <button onclick="fetchLeaderboard()" class="text-[11px] sm:text-xs bg-slate-800 hover:bg-slate-700 text-sky-400 font-orbitron px-2 sm:px-2.5 py-1.5 rounded-lg border border-sky-500/20 transition flex items-center gap-1">
               🔄 Refresh
             </button>
-            <button onclick="toggleLeaderboard()" class="text-slate-400 hover:text-white text-sm font-bold px-2.5 py-1.5 bg-slate-800 rounded-lg">✕</button>
+            <button onclick="toggleLeaderboard()" class="text-slate-400 hover:text-white text-xs sm:text-sm font-bold px-2.5 py-1.5 bg-slate-800 rounded-lg">✕</button>
           </div>
         </div>
-        <div id="leaderboard-list" class="p-4 overflow-y-auto flex-1 space-y-2">
-          <div class="text-center text-slate-500 text-sm py-6">Connecting to Firebase network...</div>
+        <div id="leaderboard-list" class="p-3 sm:p-4 overflow-y-auto flex-1 space-y-2">
+          <div class="text-center text-slate-500 text-xs sm:text-sm py-6">Connecting to Firebase network...</div>
         </div>
       </div>
     </div>
 
     <!-- Bottom Subtle Footer Badge -->
-    <div class="absolute bottom-2 left-0 right-0 z-10 text-center pointer-events-none">
-      <span class="inline-block bg-slate-950/60 backdrop-blur border border-slate-800/80 text-[10px] font-orbitron tracking-widest text-slate-400 px-3 py-1 rounded-full">
-        🟢 DESKTOP EDITION • 60 FPS ENGINE
+    <div class="absolute bottom-1 sm:bottom-2 left-0 right-0 z-10 text-center pointer-events-none">
+      <span class="inline-block bg-slate-950/60 backdrop-blur border border-slate-800/80 text-[9px] sm:text-[10px] font-orbitron tracking-widest text-slate-400 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full">
+        🟢 CROSS-PLATFORM • 60 FPS ENGINE
       </span>
     </div>
 
@@ -217,7 +200,7 @@
     let pilotCallSign = "ApexAce";
     let soundEnabled = true;
 
-    document.getElementById("best-score-display").innerText = `🏆 Best Score: ${bestScore}`;
+    document.getElementById("best-score-display").innerText = `🏆 Best: ${bestScore}`;
 
     // Bird (Apex Pilot) Object
     let bird = {
@@ -240,19 +223,7 @@
 
     let frameCount = 0;
 
-    // --- DEVICE CHECKER ---
-    function checkDevice() {
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-      if (isMobile) {
-        document.getElementById("mobile-blocker").style.display = "flex";
-      } else {
-        document.getElementById("mobile-blocker").style.display = "none";
-      }
-    }
-    window.addEventListener("resize", checkDevice);
-    window.addEventListener("load", checkDevice);
-
-    // --- INPUT CONTROLS ---
+    // --- INPUT CONTROLS (DESKTOP + MOBILE TOUCH) ---
     function triggerJump(e) {
       if (e) {
         if (e.target.closest('button') || e.target.closest('input') || e.target.closest('#leaderboard-modal')) return;
@@ -263,6 +234,7 @@
       }
     }
 
+    // Keyboard support (Space / Arrow Up)
     window.addEventListener("keydown", (e) => {
       if (e.code === "Space" || e.code === "ArrowUp") {
         e.preventDefault();
@@ -270,11 +242,18 @@
       }
     });
 
+    // Mouse click support
     canvas.addEventListener("mousedown", (e) => {
       if (e.button === 0) {
         triggerJump(e);
       }
     });
+
+    // Mobile touch support
+    canvas.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      triggerJump(e);
+    }, { passive: false });
 
     // --- NAVIGATION & UI FLOW ---
     function getDeviceId() {
@@ -294,7 +273,6 @@
 
       const newDocId = inputVal.toLowerCase().replace(/[^a-z0-9]/g, '_');
       const deviceId = getDeviceId();
-      const oldDocId = localStorage.getItem("flappy_apex_current_doc_id");
 
       // Check Firebase to see if the name is taken by ANOTHER device
       db.collection("leaderboard").doc(newDocId).get().then((doc) => {
@@ -349,7 +327,7 @@
       if (score > bestScore) {
         bestScore = score;
         localStorage.setItem("flappy_apex_best", bestScore);
-        document.getElementById("best-score-display").innerText = `🏆 Best Score: ${bestScore}`;
+        document.getElementById("best-score-display").innerText = `🏆 Best: ${bestScore}`;
       }
       document.getElementById("final-best").innerText = bestScore;
 
@@ -461,7 +439,7 @@
 
     function fetchLeaderboard() {
       const listEl = document.getElementById("leaderboard-list");
-      listEl.innerHTML = `<div class="text-center text-slate-400 text-sm py-6">Loading rankings...</div>`;
+      listEl.innerHTML = `<div class="text-center text-slate-400 text-xs sm:text-sm py-6">Loading rankings...</div>`;
 
       db.collection("leaderboard")
         .orderBy("score", "desc")
@@ -469,7 +447,7 @@
         .get()
         .then((querySnapshot) => {
           if (querySnapshot.empty) {
-            listEl.innerHTML = `<div class="text-center text-slate-500 text-sm py-6">No flights recorded yet. Be the first!</div>`;
+            listEl.innerHTML = `<div class="text-center text-slate-500 text-xs sm:text-sm py-6">No flights recorded yet. Be the first!</div>`;
             return;
           }
           let html = "";
@@ -482,12 +460,12 @@
             else if (rank === 3) medalColor = "text-amber-600 bg-amber-700/10 border border-amber-600/30";
 
             html += `
-              <div class="flex items-center justify-between p-3 rounded-xl ${medalColor} backdrop-blur">
-                <div class="flex items-center gap-3">
-                  <span class="font-orbitron font-bold text-sm w-6 text-center">#${rank}</span>
-                  <span class="font-semibold text-white text-sm tracking-wide">${escapeHtml(data.name || "Pilot")}</span>
+              <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-xl ${medalColor} backdrop-blur">
+                <div class="flex items-center gap-2.5 sm:gap-3">
+                  <span class="font-orbitron font-bold text-xs sm:text-sm w-6 text-center">#${rank}</span>
+                  <span class="font-semibold text-white text-xs sm:text-sm tracking-wide">${escapeHtml(data.name || "Pilot")}</span>
                 </div>
-                <span class="font-orbitron font-black text-sky-400 text-base">${data.score}</span>
+                <span class="font-orbitron font-black text-sky-400 text-sm sm:text-base">${data.score}</span>
               </div>
             `;
             rank++;
@@ -496,7 +474,7 @@
         })
         .catch((error) => {
           console.error("Firebase read error:", error);
-          listEl.innerHTML = `<div class="text-center text-rose-400 text-xs py-6">Failed to load leaderboard. Check Firebase rules & configuration.</div>`;
+          listEl.innerHTML = `<div class="text-center text-rose-400 text-[11px] sm:text-xs py-6">Failed to load leaderboard. Check Firebase rules & configuration.</div>`;
         });
     }
 
