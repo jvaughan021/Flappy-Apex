@@ -25,7 +25,6 @@
             font-family: 'Orbitron', sans-serif;
         }
 
-        /* Glassmorphism card effects */
         .glass-card {
             background: rgba(15, 23, 42, 0.88);
             backdrop-filter: blur(14px);
@@ -34,12 +33,10 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(99, 102, 241, 0.2);
         }
 
-        /* Glowing text effect */
         .glow-text {
             text-shadow: 0 0 15px rgba(244, 63, 94, 0.6), 0 0 30px rgba(99, 102, 241, 0.4);
         }
 
-        /* Button pulsing animation */
         .pulse-btn {
             animation: pulseGlow 2s infinite alternate;
         }
@@ -55,7 +52,6 @@
             }
         }
 
-        /* Screen flash on crash */
         .flash-overlay {
             position: absolute;
             inset: 0;
@@ -66,7 +62,6 @@
             z-index: 50;
         }
 
-        /* Score pop effect */
         @keyframes scorePop {
             0% { transform: scale(1); }
             50% { transform: scale(1.35); color: #f43f5e; }
@@ -88,7 +83,7 @@
         <!-- Flash Effect Overlay -->
         <div id="flashOverlay" class="flash-overlay"></div>
 
-        <!-- Active Gameplay HUD (NO CREATOR TAG HERE - ONLY SCORE & BEST SCORE) -->
+        <!-- Active Gameplay HUD (NO CREATOR TAG HERE) -->
         <div id="hud" class="relative z-10 p-4 flex justify-between items-center pointer-events-none transition-opacity duration-300 opacity-0">
             <div class="flex items-center space-x-2 bg-slate-900/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-slate-700/50">
                 <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Best</span>
@@ -178,10 +173,127 @@
     </div>
 
     <script>
+        // Set audio session mode if available on modern iOS/Android
+        if ('audioSession' in navigator) {
+            try {
+                navigator.audioSession.type = 'playback';
+            } catch (e) {
+                console.log('AudioSession setting not supported:', e);
+            }
+        }
+
+        // Web Audio Synthesizer Engine
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.isUnlocked = false;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) {
+                        this.ctx = new AudioCtx();
+                    }
+                }
+
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+
+                if (this.ctx && !this.isUnlocked) {
+                    // Play a silent buffer pulse on first user interaction to force mobile hardware unlock
+                    const buffer = this.ctx.createBuffer(1, 1, 22050);
+                    const source = this.ctx.createBufferSource();
+                    source.buffer = buffer;
+                    source.connect(this.ctx.destination);
+                    source.start(0);
+                    this.isUnlocked = true;
+                }
+            }
+
+            playJump() {
+                if (!this.ctx) return;
+                this.init();
+
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(780, this.ctx.currentTime + 0.12);
+
+                    gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.12);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start(this.ctx.currentTime);
+                    osc.stop(this.ctx.currentTime + 0.12);
+                } catch (e) {
+                    console.log('Audio error:', e);
+                }
+            }
+
+            playPoint() {
+                if (!this.ctx) return;
+                this.init();
+
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.08); // E5
+
+                    gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start(this.ctx.currentTime);
+                    osc.stop(this.ctx.currentTime + 0.25);
+                } catch (e) {
+                    console.log('Audio error:', e);
+                }
+            }
+
+            playCrash() {
+                if (!this.ctx) return;
+                this.init();
+
+                try {
+                    // Low frequency rumble / explosion thud
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(160, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.35);
+
+                    gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.35);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start(this.ctx.currentTime);
+                    osc.stop(this.ctx.currentTime + 0.35);
+                } catch (e) {
+                    console.log('Audio error:', e);
+                }
+            }
+        }
+
+        const sound = new SoundEngine();
+
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // UI References
         const startScreen = document.getElementById('startScreen');
         const gameOverScreen = document.getElementById('gameOverScreen');
         const hud = document.getElementById('hud');
@@ -195,7 +307,6 @@
         const flashOverlay = document.getElementById('flashOverlay');
         const gameContainer = document.getElementById('gameContainer');
 
-        // Game Variables
         let gameState = 'START';
         let animationFrameId = null;
         let score = 0;
@@ -204,7 +315,6 @@
 
         hudBestScore.textContent = highScore;
 
-        // Virtual Resolution Specs
         const V_WIDTH = 360;
         const V_HEIGHT = 640;
         let scale = 1;
@@ -223,7 +333,7 @@
             y: V_HEIGHT / 2 - 15,
             width: 32,
             height: 32,
-            gravity: 0.25,        // Soft gravity
+            gravity: 0.26,        // Soft gravity
             jumpStrength: -5.8,   // Forgiving jump impulse
             velocity: 0,
             rotation: 0,
@@ -239,8 +349,8 @@
             jump() {
                 if (gameState !== 'PLAYING') return;
                 this.velocity = this.jumpStrength;
-                
-                // Spawn jump flame particles
+                sound.playJump();
+
                 for (let i = 0; i < 6; i++) {
                     this.particles.push({
                         x: this.x - 5,
@@ -259,10 +369,8 @@
                 this.velocity += this.gravity;
                 this.y += this.velocity;
 
-                // Rotation calculation
                 this.rotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 5, this.velocity * 0.08));
 
-                // Particles update
                 for (let i = this.particles.length - 1; i >= 0; i--) {
                     const p = this.particles[i];
                     p.x += p.vx;
@@ -275,7 +383,6 @@
             },
 
             draw() {
-                // Particles
                 this.particles.forEach(p => {
                     ctx.save();
                     ctx.globalAlpha = p.alpha;
@@ -286,7 +393,6 @@
                     ctx.restore();
                 });
 
-                // Player Rocket Avatar
                 ctx.save();
                 ctx.translate((this.x + this.width / 2) * scale, (this.y + this.height / 2) * scale);
                 ctx.rotate(this.rotation);
@@ -304,13 +410,11 @@
                 ctx.roundRect(-w/2, -h/2, w, h, 8 * scale);
                 ctx.fill();
 
-                // Window
                 ctx.fillStyle = '#38bdf8';
                 ctx.beginPath();
                 ctx.arc(w * 0.15, -h * 0.1, 5 * scale, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Thruster Flame
                 if (gameState === 'PLAYING') {
                     ctx.fillStyle = '#f59e0b';
                     ctx.beginPath();
@@ -377,10 +481,11 @@
         const obstacles = {
             pipes: [],
             pipeWidth: 50,
-            pipeGap: 195,        // Extra wide gap height for forgiving navigation
+            pipeGap: 195,        // Extra wide gap height for forgiving play
             spawnTimer: 0,
             spawnInterval: 125,
             speed: 1.8,
+
             reset() {
                 this.pipes = [];
                 this.spawnTimer = 0;
@@ -455,6 +560,7 @@
 
         function incrementScore() {
             score++;
+            sound.playPoint();
             hudCurrentScore.textContent = score;
 
             hudCurrentScore.classList.remove('pop-score');
@@ -509,6 +615,7 @@
         function triggerGameOver() {
             gameState = 'GAMEOVER';
             screenShakeTime = 15;
+            sound.playCrash();
 
             flashOverlay.style.opacity = '0.8';
             setTimeout(() => {
@@ -539,6 +646,7 @@
         }
 
         function startNewGame() {
+            sound.init();
             score = 0;
             hudCurrentScore.textContent = '0';
             player.reset();
@@ -584,6 +692,8 @@
                 e.preventDefault();
             }
 
+            sound.init();
+
             if (gameState === 'START') {
                 startNewGame();
             } else if (gameState === 'PLAYING') {
@@ -599,6 +709,7 @@
         window.addEventListener('keydown', (e) => {
             if (e.code === 'Space' || e.code === 'ArrowUp') {
                 e.preventDefault();
+                sound.init();
                 if (gameState === 'START') {
                     startNewGame();
                 } else if (gameState === 'PLAYING') {
@@ -611,11 +722,13 @@
 
         startBtn.addEventListener('click', (e) => {
             e.stopPropagation();
+            sound.init();
             startNewGame();
         });
 
         restartBtn.addEventListener('click', (e) => {
             e.stopPropagation();
+            sound.init();
             startNewGame();
         });
 
