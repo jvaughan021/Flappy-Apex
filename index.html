@@ -26,7 +26,7 @@
         }
 
         .glass-card {
-            background: rgba(15, 23, 42, 0.88);
+            background: rgba(15, 23, 42, 0.92);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -71,6 +71,18 @@
         .pop-score {
             animation: scorePop 0.25s ease-out;
         }
+
+        /* Custom Scrollbar for Leaderboard */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.5);
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body class="w-screen h-screen flex items-center justify-center p-0 m-0 bg-slate-950 select-none overflow-hidden">
@@ -83,7 +95,7 @@
         <!-- Flash Effect Overlay -->
         <div id="flashOverlay" class="flash-overlay"></div>
 
-        <!-- Active Gameplay HUD (NO CREATOR TAG HERE) -->
+        <!-- Active Gameplay HUD -->
         <div id="hud" class="relative z-10 p-4 flex justify-between items-center pointer-events-none transition-opacity duration-300 opacity-0">
             <div class="flex items-center space-x-2 bg-slate-900/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-slate-700/50">
                 <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Best</span>
@@ -94,83 +106,271 @@
             </div>
         </div>
 
+        <!-- Nickname Registration Overlay (First Launch) -->
+        <div id="nicknameScreen" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 bg-slate-950/90 backdrop-blur-md text-center">
+            <div class="glass-card w-full max-w-xs p-6 rounded-3xl flex flex-col items-center space-y-4 border border-slate-700/60 shadow-2xl">
+                <div class="inline-block px-3 py-1 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-xs font-bold tracking-widest uppercase">
+                    Secure Leaderboard
+                </div>
+                <h2 class="font-orbitron text-2xl font-black text-white">CHOOSE HANDLE</h2>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Pick a unique nickname. This handle will be locked to your global scores and cannot be changed or stolen by others.
+                </p>
+                <div class="w-full space-y-2">
+                    <input type="text" id="nicknameInput" maxlength="14" placeholder="Enter unique nickname..." class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white font-orbitron text-sm text-center focus:outline-none focus:border-indigo-500 transition-colors">
+                    <p id="nicknameError" class="text-xs text-rose-400 font-semibold h-4"></p>
+                </div>
+                <button id="saveNicknameBtn" class="pulse-btn w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-sm tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
+                    CLAIM HANDLE & PLAY
+                </button>
+            </div>
+        </div>
+
         <!-- Start Screen Overlay -->
-        <div id="startScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-between p-6 bg-slate-950/75 backdrop-blur-sm text-center">
-            <div class="mt-8 flex flex-col items-center">
-                <div class="inline-block px-3 py-1 mb-2 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-xs font-bold tracking-widest uppercase">
+        <div id="startScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-between p-6 bg-slate-950/75 backdrop-blur-sm text-center hidden">
+            <div class="mt-6 flex flex-col items-center">
+                <div class="inline-block px-3 py-1 mb-1 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-xs font-bold tracking-widest uppercase">
                     Arcade Mobile Edition
                 </div>
-                <h1 class="font-orbitron text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-rose-500 via-purple-400 to-indigo-400 glow-text mb-1">
+                <h1 class="font-orbitron text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-rose-500 via-purple-400 to-indigo-400 glow-text mb-0.5">
                     FLAPPY APEX
                 </h1>
-                <p class="text-sm font-bold tracking-wide text-rose-400">
+                <p class="text-xs font-bold tracking-wide text-rose-400 mb-1">
                     Created by Jack vaughan
                 </p>
+                <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-700/50">
+                    <span class="text-[11px] text-slate-400">Player:</span>
+                    <span id="displayNickname" class="font-orbitron text-xs font-bold text-indigo-400">---</span>
+                </div>
             </div>
 
-            <!-- Animated Rocket Icon -->
-            <div class="my-auto flex flex-col items-center space-y-4">
-                <div class="relative w-24 h-24 flex items-center justify-center">
-                    <div class="absolute inset-0 rounded-full bg-rose-500/20 animate-ping"></div>
-                    <div class="relative w-20 h-20 rounded-2xl bg-gradient-to-tr from-rose-600 via-indigo-600 to-cyan-400 p-0.5 shadow-xl transform rotate-6">
-                        <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center overflow-hidden">
-                            <span class="text-4xl transform -rotate-6">🚀</span>
-                        </div>
-                    </div>
+            <!-- Leaderboard Preview Widget -->
+            <div class="w-full max-w-xs bg-slate-900/80 rounded-2xl p-3 border border-slate-800/80 my-2 flex flex-col max-h-[160px]">
+                <div class="flex justify-between items-center mb-1.5 pb-1 border-b border-slate-800">
+                    <span class="font-orbitron text-[11px] font-bold text-amber-400 uppercase tracking-wider">Top Apex Pilots</span>
+                    <span class="text-[10px] text-slate-400">Global</span>
                 </div>
-                <p class="text-xs text-slate-300 max-w-[220px] leading-relaxed">
-                    Tap anywhere on the screen to flap your thrusters and navigate the apex obstacles!
-                </p>
+                <div id="startLeaderboardList" class="overflow-y-auto space-y-1.5 pr-1 text-xs">
+                    <div class="text-slate-500 text-center py-2 text-[11px]">Loading rankings...</div>
+                </div>
             </div>
 
             <!-- Start Button -->
-            <div class="w-full max-w-xs mb-6">
-                <button id="startBtn" class="pulse-btn w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-lg tracking-wider text-white shadow-xl active:scale-95 transition-transform duration-100">
+            <div class="w-full max-w-xs mb-4">
+                <button id="startBtn" class="pulse-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-lg tracking-wider text-white shadow-xl active:scale-95 transition-transform duration-100">
                     TAP TO PLAY
                 </button>
             </div>
         </div>
 
         <!-- Game Over Screen Overlay -->
-        <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 bg-slate-950/85 backdrop-blur-md text-center hidden">
-            <div class="glass-card w-full max-w-xs p-6 rounded-3xl flex flex-col items-center space-y-5 border border-slate-700/60 shadow-2xl">
+        <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md text-center hidden">
+            <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-3 border border-slate-700/60 shadow-2xl">
                 
                 <div class="flex flex-col items-center">
-                    <span class="text-xs font-bold text-rose-400 uppercase tracking-widest mb-1">Game Over</span>
-                    <h2 class="font-orbitron text-3xl font-black text-white">APEX CRASH</h2>
+                    <span class="text-[11px] font-bold text-rose-400 uppercase tracking-widest">Game Over</span>
+                    <h2 class="font-orbitron text-2xl font-black text-white">APEX CRASH</h2>
                 </div>
 
                 <!-- Score Board -->
-                <div class="w-full bg-slate-900/90 rounded-2xl p-4 border border-slate-800/80 flex flex-col space-y-3">
+                <div class="w-full bg-slate-900/90 rounded-2xl p-3 border border-slate-800/80 flex flex-col space-y-2">
                     <div class="flex justify-between items-center">
-                        <span class="text-xs font-semibold text-slate-400 uppercase">Score</span>
-                        <span id="finalScore" class="font-orbitron text-2xl font-black text-rose-400">0</span>
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase">Score</span>
+                        <span id="finalScore" class="font-orbitron text-xl font-black text-rose-400">0</span>
                     </div>
                     <div class="w-full h-[1px] bg-slate-800"></div>
                     <div class="flex justify-between items-center">
-                        <span class="text-xs font-semibold text-slate-400 uppercase">Best Score</span>
-                        <span id="bestScore" class="font-orbitron text-2xl font-black text-amber-400">0</span>
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase">Best Score</span>
+                        <span id="bestScore" class="font-orbitron text-xl font-black text-amber-400">0</span>
                     </div>
                 </div>
 
                 <!-- High Score Record Badge -->
-                <div id="newRecordBadge" class="hidden px-3 py-1 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full text-slate-950 font-orbitron text-xs font-black tracking-wider uppercase shadow-lg animate-bounce">
+                <div id="newRecordBadge" class="hidden px-3 py-0.5 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full text-slate-950 font-orbitron text-[10px] font-black tracking-wider uppercase shadow-lg animate-bounce">
                     ★ NEW HIGH SCORE ★
                 </div>
 
-                <!-- Creator Credit -->
-                <p class="text-xs text-slate-300 font-bold">
-                    Created by Jack vaughan
-                </p>
+                <!-- Mini Leaderboard Card -->
+                <div class="w-full bg-slate-900/80 rounded-xl p-2.5 border border-slate-800/80 flex flex-col max-h-[110px]">
+                    <div class="flex justify-between items-center mb-1 pb-1 border-b border-slate-800">
+                        <span class="font-orbitron text-[10px] font-bold text-indigo-400 uppercase">Leaderboard Standings</span>
+                    </div>
+                    <div id="gameOverLeaderboardList" class="overflow-y-auto space-y-1 pr-1 text-[11px]">
+                        <div class="text-slate-500 text-center py-1">Loading...</div>
+                    </div>
+                </div>
 
                 <!-- Restart Button -->
-                <button id="restartBtn" class="pulse-btn w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-base tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
+                <button id="restartBtn" class="pulse-btn w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-sm tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
                     PLAY AGAIN
                 </button>
             </div>
         </div>
 
     </div>
+
+    <!-- Firebase SDKs via CDN -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getDatabase, ref, get, set, child, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+        // Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOYhgtv60QLR2n8L1Sg9fE_ZVL0Iv5wHI",
+            authDomain: "flappy-apex.firebaseapp.com",
+            databaseURL: "https://flappy-apex-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "flappy-apex",
+            storageBucket: "flappy-apex.firebasestorage.app",
+            messagingSenderId: "1034019070150",
+            appId: "1:1034019070150:web:48bf395e8af6de249637c7",
+            measurementId: "G-6ZFCRY427W"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // State & DOM Elements
+        const nicknameScreen = document.getElementById('nicknameScreen');
+        const startScreen = document.getElementById('startScreen');
+        const nicknameInput = document.getElementById('nicknameInput');
+        const nicknameError = document.getElementById('nicknameError');
+        const saveNicknameBtn = document.getElementById('saveNicknameBtn');
+        const displayNickname = document.getElementById('displayNickname');
+        const startLeaderboardList = document.getElementById('startLeaderboardList');
+        const gameOverLeaderboardList = document.getElementById('gameOverLeaderboardList');
+
+        let userNickname = localStorage.getItem('flappyApex_nickname') || '';
+
+        // Check if user already registered a unique nickname on this device
+        if (userNickname) {
+            nicknameScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            displayNickname.textContent = userNickname;
+            fetchLeaderboard();
+        }
+
+        // Handle Nickname Registration & Uniqueness Check
+        async function handleNicknameRegistration() {
+            let rawNick = nicknameInput.value.trim();
+            // Sanitize key for Firebase (remove special chars/periods/hashes)
+            let cleanNick = rawNick.replace(/[\.#$\/\[\]]/g, '');
+
+            if (!cleanNick || cleanNick.length < 2) {
+                nicknameError.textContent = 'Nickname must be at least 2 characters.';
+                return;
+            }
+
+            saveNicknameBtn.disabled = true;
+            saveNicknameBtn.textContent = 'CHECKING...';
+            nicknameError.textContent = '';
+
+            try {
+                const nickRef = ref(db, 'nicknames/' + cleanNick.toLowerCase());
+                const snapshot = await get(nickRef);
+
+                if (snapshot.exists()) {
+                    nicknameError.textContent = 'Nickname already taken! Choose another.';
+                    saveNicknameBtn.disabled = false;
+                    saveNicknameBtn.textContent = 'CLAIM HANDLE & PLAY';
+                } else {
+                    // Claim the nickname and initialize user record
+                    await set(nickRef, { originalName: cleanNick, createdAt: Date.now() });
+                    await set(ref(db, 'scores/' + cleanNick.toLowerCase()), {
+                        nickname: cleanNick,
+                        score: 0,
+                        updatedAt: Date.now()
+                    });
+
+                    localStorage.setItem('flappyApex_nickname', cleanNick);
+                    userNickname = cleanNick;
+
+                    displayNickname.textContent = userNickname;
+                    nicknameScreen.classList.add('hidden');
+                    startScreen.classList.remove('hidden');
+                    fetchLeaderboard();
+                }
+            } catch (err) {
+                console.error(err);
+                nicknameError.textContent = 'Connection error. Try again.';
+                saveNicknameBtn.disabled = false;
+                saveNicknameBtn.textContent = 'CLAIM HANDLE & PLAY';
+            }
+        }
+
+        saveNicknameBtn.addEventListener('click', handleNicknameRegistration);
+        nicknameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleNicknameRegistration();
+        });
+
+        // Fetch & Render Leaderboard
+        window.fetchLeaderboard = async function() {
+            try {
+                const scoresRef = ref(db, 'scores');
+                const snapshot = await get(scoresRef);
+
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const scoresArray = Object.values(data);
+                    // Sort by highest score descending
+                    scoresArray.sort((a, b) => b.score - a.score);
+                    const topTen = scoresArray.slice(0, 10);
+
+                    let html = '';
+                    topTen.forEach((item, index) => {
+                        let rankColor = index === 0 ? 'text-amber-400 font-black' : (index === 1 ? 'text-slate-300 font-bold' : (index === 2 ? 'text-amber-600 font-bold' : 'text-slate-400'));
+                        let isMe = item.nickname.toLowerCase() === userNickname.toLowerCase() ? 'bg-indigo-500/20 border-indigo-500/40' : 'bg-slate-900/50 border-slate-800';
+                        
+                        html += `
+                            flex justify-between items-center px-2.5 py-1.5 rounded-lg border ${isMe}">
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-orbitron text-[10px] ${rankColor}">#${index + 1}</span>
+                                    <span class="font-bold text-white truncate max-w-[110px]">${item.nickname}</span>
+                                </div>
+                                <span class="font-orbitron text-xs font-black text-rose-400">${item.score}</span>
+                            </div>
+                        `;
+                    });
+
+                    startLeaderboardList.innerHTML = html;
+                    gameOverLeaderboardList.innerHTML = html;
+                } else {
+                    startLeaderboardList.innerHTML = '<div class="text-slate-500 text-center py-2 text-[11px]">No scores yet. Be the first!</div>';
+                    gameOverLeaderboardList.innerHTML = '<div class="text-slate-500 text-center py-1 text-[11px]">No scores recorded yet.</div>';
+                }
+            } catch (e) {
+                console.error('Leaderboard fetch error:', e);
+                startLeaderboardList.innerHTML = '<div class="text-slate-500 text-center py-2 text-[11px]">Failed to load rankings.</div>';
+            }
+        };
+
+        // Submit Score to Firebase when new high score is reached
+        window.submitScoreToFirebase = async function(newScore) {
+            if (!userNickname) return;
+            const key = userNickname.toLowerCase();
+            const userScoreRef = ref(db, 'scores/' + key);
+
+            try {
+                await runTransaction(userScoreRef, (currentData) => {
+                    if (currentData) {
+                        if (newScore > (currentData.score || 0)) {
+                            currentData.score = newScore;
+                            currentData.updatedAt = Date.now();
+                        }
+                    } else {
+                        currentData = {
+                            nickname: userNickname,
+                            score: newScore,
+                            updatedAt: Date.now()
+                        };
+                    }
+                    return currentData;
+                });
+                fetchLeaderboard();
+            } catch (e) {
+                console.error('Score submission error:', e);
+            }
+        };
+    </script>
 
     <script>
         // Set audio session mode if available on modern iOS/Android
@@ -202,7 +402,6 @@
                 }
 
                 if (this.ctx && !this.isUnlocked) {
-                    // Play a silent buffer pulse on first user interaction to force mobile hardware unlock
                     const buffer = this.ctx.createBuffer(1, 1, 22050);
                     const source = this.ctx.createBufferSource();
                     source.buffer = buffer;
@@ -267,7 +466,6 @@
                 this.init();
 
                 try {
-                    // Low frequency rumble / explosion thud
                     const osc = this.ctx.createOscillator();
                     const gain = this.ctx.createGain();
 
@@ -481,7 +679,7 @@
         const obstacles = {
             pipes: [],
             pipeWidth: 50,
-            pipeGap: 195,        // Extra wide gap height for forgiving play
+            pipeGap: 195,         // Extra wide gap height for forgiving play
             spawnTimer: 0,
             spawnInterval: 125,
             speed: 1.8,
@@ -637,6 +835,11 @@
                 newRecordBadge.classList.remove('hidden');
             } else {
                 newRecordBadge.classList.add('hidden');
+            }
+
+            // Send score to Firebase leaderboards
+            if (window.submitScoreToFirebase) {
+                window.submitScoreToFirebase(score);
             }
 
             setTimeout(() => {
