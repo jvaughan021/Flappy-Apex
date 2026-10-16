@@ -172,54 +172,47 @@
                     VIEW LEADERBOARD
                 </button>
             </div>
-
-            <!-- A-ADS Advertisement -->
-            <div class="relative z-10 mt-4 w-full flex justify-center">
-                <!-- BEGIN AADS AD UNIT 2458775 -->
-                <div id="frame" style="width: 300px; margin: auto; z-index: 99998; height: auto">
-                    <iframe data-aa="2458775"
-                            src="//ad.a-ads.com/2458775/?size=300x250"
-                            title="Advertisement"
-                            style="border: 0; padding: 0; width: 300px; height: 250px; overflow: hidden; display: block; margin: auto">
-                    </iframe>
-                </div>
-                <!-- END AADS AD UNIT 2458775 -->
-            </div>
         </div>
 
-        <!-- Game Over Screen Overlay -->
-        <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md text-center hidden">
-            <div class="glass-card w-full max-w-xs p-5 rounded-3xl flex flex-col items-center space-y-4 border border-slate-700/60 shadow-2xl">
+        <!-- Game Over Screen Overlay (With Embedded A-Ads Unit #2458775) -->
+        <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-3 bg-slate-950/85 backdrop-blur-md text-center hidden">
+            <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[96vh]">
                 
                 <div class="flex flex-col items-center">
-                    <span class="text-[11px] font-bold text-rose-400 uppercase tracking-widest">Game Over</span>
-                    <h2 class="font-orbitron text-2xl font-black text-white">APEX CRASH</h2>
+                    <span class="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Game Over</span>
+                    <h2 class="font-orbitron text-xl font-black text-white">APEX CRASH</h2>
                 </div>
 
                 <!-- Score Board -->
-                <div class="w-full bg-slate-900/90 rounded-2xl p-3.5 border border-slate-800/80 flex flex-col space-y-2.5">
+                <div class="w-full bg-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 flex flex-col space-y-1.5">
                     <div class="flex justify-between items-center">
-                        <span class="text-[11px] font-semibold text-slate-400 uppercase">Score</span>
-                        <span id="finalScore" class="font-orbitron text-xl font-black text-rose-400">0</span>
+                        <span class="text-[10px] font-semibold text-slate-400 uppercase">Score</span>
+                        <span id="finalScore" class="font-orbitron text-lg font-black text-rose-400">0</span>
                     </div>
                     <div class="w-full h-[1px] bg-slate-800"></div>
                     <div class="flex justify-between items-center">
-                        <span class="text-[11px] font-semibold text-slate-400 uppercase">Best Score</span>
-                        <span id="bestScore" class="font-orbitron text-xl font-black text-amber-400">0</span>
+                        <span class="text-[10px] font-semibold text-slate-400 uppercase">Best Score</span>
+                        <span id="bestScore" class="font-orbitron text-lg font-black text-amber-400">0</span>
                     </div>
                 </div>
 
                 <!-- High Score Record Badge -->
-                <div id="newRecordBadge" class="hidden px-3 py-0.5 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full text-slate-950 font-orbitron text-[10px] font-black tracking-wider uppercase shadow-lg animate-bounce">
+                <div id="newRecordBadge" class="hidden px-3 py-0.5 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full text-slate-950 font-orbitron text-[9px] font-black tracking-wider uppercase shadow-lg animate-bounce">
                     ★ NEW HIGH SCORE ★
                 </div>
 
+                <!-- BEGIN AADS AD UNIT #2458775 -->
+                <div id="frame" style="width: 300px; margin: auto; z-index: 99998; height: auto;">
+                    <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=300x250' style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
+                </div>
+                <!-- END AADS AD UNIT #2458775 -->
+
                 <!-- Action Buttons -->
-                <div class="w-full space-y-2">
-                    <button id="restartBtn" class="pulse-btn w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-sm tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
+                <div class="w-full space-y-1.5">
+                    <button id="restartBtn" class="pulse-btn w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
                         PLAY AGAIN
                     </button>
-                    <button id="openLeaderboardGameOverBtn" class="w-full py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-xs tracking-wider text-indigo-300 border border-indigo-500/30 active:scale-95 transition-all">
+                    <button id="openLeaderboardGameOverBtn" class="w-full py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-[11px] tracking-wider text-indigo-300 border border-indigo-500/30 active:scale-95 transition-all">
                         VIEW LEADERBOARD
                     </button>
                 </div>
@@ -249,7 +242,6 @@
 
         let userNickname = localStorage.getItem('flappyApex_nickname') || '';
 
-        // Initialize UI Bindings Safely once DOM is ready
         window.addEventListener('DOMContentLoaded', () => {
             const nicknameScreen = document.getElementById('nicknameScreen');
             const startScreen = document.getElementById('startScreen');
@@ -270,7 +262,6 @@
                 fetchLeaderboard();
             }
 
-            // Bulletproof Modal Toggle Listeners
             if (openLeaderboardStartBtn) {
                 openLeaderboardStartBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -294,7 +285,6 @@
                 });
             }
 
-            // Nickname registration handler
             async function handleNicknameRegistration() {
                 let rawNick = nicknameInput.value.trim();
                 let cleanNick = rawNick.replace(/[\.#$\/\[\]]/g, '');
@@ -350,7 +340,6 @@
             }
         });
 
-        // Fetch & Render Leaderboard
         window.fetchLeaderboard = async function() {
             const modalLeaderboardList = document.getElementById('modalLeaderboardList');
             if (!modalLeaderboardList) return;
@@ -391,7 +380,6 @@
             }
         };
 
-        // Submit Score to Firebase
         window.submitScoreToFirebase = async function(newScore) {
             if (!userNickname) return;
             const key = userNickname.toLowerCase();
@@ -421,7 +409,6 @@
     </script>
 
     <script>
-        // Set audio session mode if available on modern iOS/Android
         if ('audioSession' in navigator) {
             try {
                 navigator.audioSession.type = 'playback';
@@ -430,7 +417,6 @@
             }
         }
 
-        // Web Audio Synthesizer Engine
         class SoundEngine {
             constructor() {
                 this.ctx = null;
@@ -493,8 +479,8 @@
                     const gain = this.ctx.createGain();
 
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.08); // E5
+                    osc.frequency.setValueAtTime(523.25, this.ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.08);
 
                     gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
