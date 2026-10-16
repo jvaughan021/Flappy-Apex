@@ -263,11 +263,15 @@
             const openLeaderboardGameOverBtn = document.getElementById('openLeaderboardGameOverBtn');
             const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
 
-            if (userNickname) {
+            // Robust mobile screen state handler
+            if (userNickname && userNickname.trim() !== '') {
                 nicknameScreen.classList.add('hidden');
                 startScreen.classList.remove('hidden');
                 displayNickname.textContent = userNickname;
                 fetchLeaderboard();
+            } else {
+                nicknameScreen.classList.remove('hidden');
+                startScreen.classList.add('hidden');
             }
 
             if (openLeaderboardStartBtn) {
