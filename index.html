@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Flappy Apex - Created by Jack Vaughan</title>
+    <title>Flappy Apex - Created by Jack vaughan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -80,6 +80,7 @@
             animation: scorePop 0.25s ease-out;
         }
 
+        /* Custom Scrollbar for Leaderboard */
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -113,7 +114,7 @@
             </div>
         </div>
 
-        <!-- Nickname Registration Overlay -->
+        <!-- Nickname Registration Overlay (First Launch - Houses Ad for Crawler Validation) -->
         <div id="nicknameScreen" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-3 bg-slate-950/90 backdrop-blur-md text-center hidden">
             <div class="glass-card w-full max-w-xs p-3 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl max-h-[98vh] overflow-y-auto">
                 <div class="inline-block px-2.5 py-0.5 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-[10px] font-bold tracking-widest uppercase">
@@ -127,6 +128,12 @@
                     <input type="text" id="nicknameInput" maxlength="14" placeholder="Enter nickname..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white font-orbitron text-xs text-center focus:outline-none focus:border-indigo-500 transition-colors">
                     <p id="nicknameError" class="text-[10px] text-rose-400 font-semibold h-3"></p>
                 </div>
+
+                <!-- BEGIN AADS AD UNIT #2458775 (Nickname Screen for Initial Verification) -->
+                <div id="frame" style="width: 300px; margin: auto; height: auto;">
+                    <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=300x250' style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
+                </div>
+                <!-- END AADS AD UNIT #2458775 -->
 
                 <button id="saveNicknameBtn" class="pulse-btn w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
                     CLAIM HANDLE & PLAY
@@ -142,6 +149,7 @@
                     <h2 class="font-orbitron text-2xl font-black text-white">TOP PILOTS</h2>
                 </div>
                 
+                <!-- Full Rankings Container -->
                 <div id="modalLeaderboardList" class="w-full bg-slate-900/90 rounded-2xl p-3 border border-slate-800/80 max-h-[280px] overflow-y-auto space-y-2 text-xs">
                     <div class="text-slate-500 text-center py-4 text-xs">Loading rankings...</div>
                 </div>
@@ -162,7 +170,7 @@
                     FLAPPY APEX
                 </h1>
                 <p class="text-xs font-bold tracking-wide text-rose-400 mb-2">
-                    Created by Jack Vaughan
+                    Created by Jack vaughan
                 </p>
                 <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-700/50">
                     <span class="text-[11px] text-slate-400">Player:</span>
@@ -170,6 +178,7 @@
                 </div>
             </div>
 
+            <!-- Menu Action Buttons -->
             <div class="w-full max-w-xs space-y-3">
                 <button id="startBtn" class="pulse-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-lg tracking-wider text-white shadow-xl active:scale-95 transition-transform duration-100">
                     TAP TO PLAY
@@ -180,7 +189,7 @@
             </div>
         </div>
 
-        <!-- Game Over Screen Overlay -->
+        <!-- Game Over Screen Overlay (Houses Ad for Replaying / Returning Players) -->
         <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-2 bg-slate-950/85 backdrop-blur-md text-center opacity-0 pointer-events-none transition-opacity duration-300">
             <div class="glass-card w-full max-w-xs p-3 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[98vh]">
                 
@@ -189,6 +198,7 @@
                     <h2 class="font-orbitron text-base font-black text-white">APEX CRASH</h2>
                 </div>
 
+                <!-- Score Board -->
                 <div class="w-full bg-slate-900/90 rounded-xl p-2 border border-slate-800/80 flex flex-col space-y-1">
                     <div class="flex justify-between items-center">
                         <span class="text-[9px] font-semibold text-slate-400 uppercase">Score</span>
@@ -201,10 +211,18 @@
                     </div>
                 </div>
 
+                <!-- High Score Record Badge -->
                 <div id="newRecordBadge" class="hidden px-2.5 py-0.5 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full text-slate-950 font-orbitron text-[8px] font-black tracking-wider uppercase shadow-lg animate-bounce">
                     ★ NEW HIGH SCORE ★
                 </div>
 
+                <!-- BEGIN AADS AD UNIT #2458775 (Game Over Screen for Repeating Players) -->
+                <div id="frameGameOver" style="width: 300px; margin: auto; height: auto;">
+                    <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=300x250' style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
+                </div>
+                <!-- END AADS AD UNIT #2458775 -->
+
+                <!-- Action Buttons -->
                 <div class="w-full space-y-1">
                     <button id="restartBtn" class="pulse-btn w-full py-2 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
                         PLAY AGAIN
@@ -218,7 +236,7 @@
 
     </div>
 
-    <!-- Firebase SDKs & Game Engine Script -->
+    <!-- Firebase SDKs via CDN -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getDatabase, ref, get, set, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -661,77 +679,6 @@
             }
         };
 
-        const pipes = {
-            list: [],
-            speed: 2.8,
-            spawnTimer: 0,
-            spawnInterval: 100,
-            width: 60,
-            gap: 150,
-
-            reset() {
-                this.list = [];
-                this.spawnTimer = 0;
-            },
-
-            update() {
-                if (gameState !== 'PLAYING') return;
-
-                this.spawnTimer++;
-                if (this.spawnTimer >= this.spawnInterval) {
-                    this.spawnTimer = 0;
-                    const minHeight = 60;
-                    const maxHeight = V_HEIGHT - this.gap - 120;
-                    const topHeight = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
-
-                    this.list.push({
-                        x: V_WIDTH,
-                        top: topHeight,
-                        bottom: V_HEIGHT - topHeight - this.gap,
-                        passed: false
-                    });
-                }
-
-                for (let i = this.list.length - 1; i >= 0; i--) {
-                    const p = this.list[i];
-                    p.x -= this.speed;
-
-                    if (!p.passed && p.x + this.width < player.x) {
-                        p.passed = true;
-                        score++;
-                        hudCurrentScore.textContent = score;
-                        hudCurrentScore.classList.add('pop-score');
-                        setTimeout(() => hudCurrentScore.classList.remove('pop-score'), 250);
-                        sound.playPoint();
-                    }
-
-                    if (p.x + this.width < 0) {
-                        this.list.splice(i, 1);
-                    }
-                }
-            },
-
-            draw() {
-                this.list.forEach(p => {
-                    const x = p.x * scale;
-                    const w = this.width * scale;
-
-                    const pipeGrad = ctx.createLinearGradient(x, 0, x + w, 0);
-                    pipeGrad.addColorStop(0, '#065f46');
-                    pipeGrad.addColorStop(0.5, '#10b981');
-                    pipeGrad.addColorStop(1, '#047857');
-
-                    ctx.fillStyle = pipeGrad;
-                    ctx.fillRect(x, 0, w, p.top * scale);
-                    ctx.fillRect(x, (V_HEIGHT - p.bottom) * scale, w, p.bottom * scale);
-
-                    ctx.fillStyle = '#34d399';
-                    ctx.fillRect(x - 3 * scale, (p.top - 18) * scale, (w + 6) * scale, 18 * scale);
-                    ctx.fillRect(x - 3 * scale, (V_HEIGHT - p.bottom) * scale, (w + 6) * scale, 18 * scale);
-                });
-            }
-        };
-
         const background = {
             clouds: [
                 { x: 40, y: 50, scale: 0.8, speed: 0.3 },
@@ -757,136 +704,292 @@
 
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
                 this.clouds.forEach(c => {
+                    const cx = c.x * scale;
+                    const cy = c.y * scale;
+                    const cs = c.scale * scale;
+
                     ctx.beginPath();
-                    ctx.arc(c.x * scale, c.y * scale, 25 * c.scale * scale, 0, Math.PI * 2);
-                    ctx.arc((c.x + 15) * scale, (c.y - 10) * scale, 20 * c.scale * scale, 0, Math.PI * 2);
-                    ctx.arc((c.x + 30) * scale, c.y * scale, 22 * c.scale * scale, 0, Math.PI * 2);
+                    ctx.arc(cx, cy, 20 * cs, 0, Math.PI * 2);
+                    ctx.arc(cx + 15 * cs, cy - 10 * cs, 25 * cs, 0, Math.PI * 2);
+                    ctx.arc(cx + 35 * cs, cy, 20 * cs, 0, Math.PI * 2);
                     ctx.fill();
+                });
+
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
+                ctx.beginPath();
+                ctx.moveTo(0, canvas.height);
+                ctx.lineTo(0, canvas.height - 100 * scale);
+                ctx.lineTo(80 * scale, canvas.height - 160 * scale);
+                ctx.lineTo(180 * scale, canvas.height - 110 * scale);
+                ctx.lineTo(260 * scale, canvas.height - 180 * scale);
+                ctx.lineTo(V_WIDTH * scale, canvas.height - 90 * scale);
+                ctx.lineTo(V_WIDTH * scale, canvas.height);
+                ctx.fill();
+            }
+        };
+
+        const obstacles = {
+            pipes: [],
+            pipeWidth: 50,
+            pipeGap: 195,
+            spawnTimer: 0,
+            spawnInterval: 125,
+            speed: 1.8,
+
+            reset() {
+                this.pipes = [];
+                this.spawnTimer = 0;
+            },
+
+            update() {
+                if (gameState !== 'PLAYING') return;
+
+                this.spawnTimer++;
+                if (this.spawnTimer >= this.spawnInterval) {
+                    this.spawnTimer = 0;
+
+                    const minHeight = 45;
+                    const maxHeight = V_HEIGHT - this.pipeGap - 90;
+                    const topHeight = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
+
+                    this.pipes.push({
+                        x: V_WIDTH,
+                        topHeight: topHeight,
+                        bottomY: topHeight + this.pipeGap,
+                        passed: false
+                    });
+                }
+
+                for (let i = this.pipes.length - 1; i >= 0; i--) {
+                    const pipe = this.pipes[i];
+                    pipe.x -= this.speed;
+
+                    if (!pipe.passed && pipe.x + this.pipeWidth < player.x) {
+                        pipe.passed = true;
+                        incrementScore();
+                    }
+
+                    if (pipe.x < -this.pipeWidth) {
+                        this.pipes.splice(i, 1);
+                    }
+                }
+            },
+
+            draw() {
+                this.pipes.forEach(pipe => {
+                    const px = pipe.x * scale;
+                    const pw = this.pipeWidth * scale;
+                    const topH = pipe.topHeight * scale;
+                    const botY = pipe.bottomY * scale;
+                    const botH = (V_HEIGHT - pipe.bottomY) * scale;
+
+                    const pipeGradient = ctx.createLinearGradient(px, 0, px + pw, 0);
+                    pipeGradient.addColorStop(0, '#1e293b');
+                    pipeGradient.addColorStop(0.3, '#334155');
+                    pipeGradient.addColorStop(0.7, '#475569');
+                    pipeGradient.addColorStop(1, '#0f172a');
+
+                    const rimGradient = ctx.createLinearGradient(px, 0, px + pw, 0);
+                    rimGradient.addColorStop(0, '#f43f5e');
+                    rimGradient.addColorStop(1, '#6366f1');
+
+                    // Top Pipe
+                    ctx.fillStyle = pipeGradient;
+                    ctx.fillRect(px, 0, pw, topH);
+                    ctx.fillStyle = rimGradient;
+                    ctx.fillRect(px - 3 * scale, topH - 14 * scale, pw + 6 * scale, 14 * scale);
+
+                    // Bottom Pipe
+                    ctx.fillStyle = pipeGradient;
+                    ctx.fillRect(px, botY, pw, botH);
+                    ctx.fillStyle = rimGradient;
+                    ctx.fillRect(px - 3 * scale, botY, pw + 6 * scale, 14 * scale);
                 });
             }
         };
 
+        function incrementScore() {
+            score++;
+            sound.playPoint();
+            hudCurrentScore.textContent = score;
+
+            hudCurrentScore.classList.remove('pop-score');
+            void hudCurrentScore.offsetWidth;
+            hudCurrentScore.classList.add('pop-score');
+        }
+
         function checkCollisions() {
-            if (player.y + player.height >= V_HEIGHT - 30 || player.y <= 0) {
+            if (player.y <= 0 || player.y + player.height >= V_HEIGHT) {
                 triggerGameOver();
                 return;
             }
 
-            for (let i = 0; i < pipes.list.length; i++) {
-                const p = pipes.list[i];
-                if (
-                    player.x + player.width > p.x &&
-                    player.x < p.x + pipes.width &&
-                    (player.y < p.top || player.y + player.height > V_HEIGHT - p.bottom)
-                ) {
+            const hitboxPadding = 8;
+            for (let i = 0; i < obstacles.pipes.length; i++) {
+                const pipe = obstacles.pipes[i];
+                const pBox = {
+                    left: player.x + hitboxPadding,
+                    right: player.x + player.width - hitboxPadding,
+                    top: player.y + hitboxPadding,
+                    bottom: player.y + player.height - hitboxPadding
+                };
+
+                const topPipeBox = {
+                    left: pipe.x,
+                    right: pipe.x + obstacles.pipeWidth,
+                    top: 0,
+                    bottom: pipe.topHeight
+                };
+
+                const bottomPipeBox = {
+                    left: pipe.x,
+                    right: pipe.x + obstacles.pipeWidth,
+                    top: pipe.bottomY,
+                    bottom: V_HEIGHT
+                };
+
+                if (rectsIntersect(pBox, topPipeBox) || rectsIntersect(pBox, bottomPipeBox)) {
                     triggerGameOver();
                     return;
                 }
             }
         }
 
+        function rectsIntersect(r1, r2) {
+            return !(r2.left > r1.right || 
+                     r2.right < r1.left || 
+                     r2.top > r1.bottom || 
+                     r2.bottom < r1.top);
+        }
+
         function triggerGameOver() {
             gameState = 'GAMEOVER';
-            sound.playCrash();
             screenShakeTime = 15;
+            sound.playCrash();
 
-            flashOverlay.style.opacity = '0.7';
-            setTimeout(() => { flashOverlay.style.opacity = '0'; }, 150);
+            flashOverlay.style.opacity = '0.8';
+            setTimeout(() => {
+                flashOverlay.style.opacity = '0';
+            }, 100);
 
+            let isNewHigh = false;
             if (score > highScore) {
                 highScore = score;
                 localStorage.setItem('flappyApex_highScore', highScore);
-                hudBestScore.textContent = highScore;
-                bestScoreEl.textContent = highScore;
-                newRecordBadge.classList.remove('hidden');
-            } else {
-                bestScoreEl.textContent = highScore;
-                newRecordBadge.classList.add('hidden');
+                isNewHigh = true;
             }
 
             finalScoreEl.textContent = score;
-            hud.style.opacity = '0';
-            gameOverScreen.classList.remove('opacity-0', 'pointer-events-none');
+            bestScoreEl.textContent = highScore;
+            hudBestScore.textContent = highScore;
 
-            if (typeof window.submitScoreToFirebase === 'function') {
+            if (isNewHigh && score > 0) {
+                newRecordBadge.classList.remove('hidden');
+            } else {
+                newRecordBadge.classList.add('hidden');
+            }
+
+            if (window.submitScoreToFirebase) {
                 window.submitScoreToFirebase(score);
             }
+
+            setTimeout(() => {
+                hud.classList.add('opacity-0');
+                gameOverScreen.classList.remove('opacity-0', 'pointer-events-none');
+            }, 300);
         }
 
-        function startGame() {
+        function startNewGame() {
             sound.init();
             score = 0;
             hudCurrentScore.textContent = '0';
             player.reset();
-            pipes.reset();
-            gameState = 'PLAYING';
+            obstacles.reset();
 
             startScreen.classList.add('hidden');
             gameOverScreen.classList.add('opacity-0', 'pointer-events-none');
-            hud.style.opacity = '1';
+            hud.classList.remove('opacity-0');
+
+            gameState = 'PLAYING';
+            player.jump();
         }
-
-        function handleInput(e) {
-            if (e) e.preventDefault();
-            if (gameState === 'START') {
-                startGame();
-            } else if (gameState === 'PLAYING') {
-                player.jump();
-            } else if (gameState === 'GAMEOVER') {
-                if (screenShakeTime <= 0) {
-                    startGame();
-                }
-            }
-        }
-
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' || e.code === 'ArrowUp') {
-                handleInput(e);
-            }
-        });
-
-        canvas.addEventListener('pointerdown', (e) => {
-            handleInput(e);
-        });
-
-        startBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            startGame();
-        });
-
-        restartBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            startGame();
-        });
 
         function gameLoop() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             ctx.save();
             if (screenShakeTime > 0) {
+                const shakeX = (Math.random() - 0.5) * 12;
+                const shakeY = (Math.random() - 0.5) * 12;
+                ctx.translate(shakeX, shakeY);
                 screenShakeTime--;
-                const offsetX = (Math.random() - 0.5) * 8 * scale;
-                const offsetY = (Math.random() - 0.5) * 8 * scale;
-                ctx.translate(offsetX, offsetY);
             }
 
             background.update();
-            background.draw();
-
+            obstacles.update();
             if (gameState === 'PLAYING') {
                 player.update();
-                pipes.update();
                 checkCollisions();
             }
 
-            pipes.draw();
+            background.draw();
+            obstacles.draw();
             player.draw();
 
             ctx.restore();
+
             animationFrameId = requestAnimationFrame(gameLoop);
         }
 
-        gameLoop();
+        function handleUserAction(e) {
+            if (e.type === 'touchstart' && e.cancelable) {
+                e.preventDefault();
+            }
+
+            sound.init();
+
+            if (gameState === 'START') {
+                startNewGame();
+            } else if (gameState === 'PLAYING') {
+                player.jump();
+            }
+        }
+
+        canvas.addEventListener('touchstart', handleUserAction, { passive: false });
+        canvas.addEventListener('mousedown', (e) => {
+            if (e.button === 0) handleUserAction(e);
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp') {
+                e.preventDefault();
+                sound.init();
+                if (gameState === 'START') {
+                    startNewGame();
+                } else if (gameState === 'PLAYING') {
+                    player.jump();
+                } else if (gameState === 'GAMEOVER' && !gameOverScreen.classList.contains('pointer-events-none')) {
+                    startNewGame();
+                }
+            }
+        });
+
+        startBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sound.init();
+            startNewGame();
+        });
+
+        restartBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sound.init();
+            startNewGame();
+        });
+
+        window.onload = function() {
+            resizeCanvas();
+            gameLoop();
+        };
     </script>
 </body>
 </html>
