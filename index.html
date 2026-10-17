@@ -114,22 +114,22 @@
             </div>
         </div>
 
-        <!-- Nickname Registration Overlay (First Launch - Houses Ad for Immediate Crawler Validation) -->
-        <div id="nicknameScreen" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md text-center hidden">
-            <div class="glass-card w-full max-w-sm p-4 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl max-h-[96vh] overflow-y-auto">
-                <div class="inline-block px-3 py-1 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-[10px] font-bold tracking-widest uppercase">
+        <!-- Nickname Registration Overlay (First Launch - Houses Ad for Crawler Validation) -->
+        <div id="nicknameScreen" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-3 bg-slate-950/90 backdrop-blur-md text-center hidden">
+            <div class="glass-card w-full max-w-xs p-3 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl max-h-[98vh] overflow-y-auto">
+                <div class="inline-block px-2.5 py-0.5 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-[10px] font-bold tracking-widest uppercase">
                     Secure Leaderboard
                 </div>
-                <h2 class="font-orbitron text-lg font-black text-white">CHOOSE HANDLE</h2>
+                <h2 class="font-orbitron text-base font-black text-white">CHOOSE HANDLE</h2>
                 <p class="text-[10px] text-slate-300 leading-relaxed">
-                    Pick a unique nickname. This handle will be locked to your global scores.
+                    Pick a unique nickname to lock your global scores.
                 </p>
                 <div class="w-full space-y-1">
                     <input type="text" id="nicknameInput" maxlength="14" placeholder="Enter nickname..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white font-orbitron text-xs text-center focus:outline-none focus:border-indigo-500 transition-colors">
                     <p id="nicknameError" class="text-[10px] text-rose-400 font-semibold h-3"></p>
                 </div>
 
-                <!-- BEGIN AADS AD UNIT #2458775 (Matched to 300x250) -->
+                <!-- BEGIN AADS AD UNIT #2458775 (Nickname Screen for Initial Verification) -->
                 <div id="frame" style="width: 300px; margin: auto; height: auto;">
                     <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=300x250' style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
                 </div>
@@ -189,39 +189,45 @@
             </div>
         </div>
 
-        <!-- Game Over Screen Overlay -->
-        <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-3 bg-slate-950/85 backdrop-blur-md text-center opacity-0 pointer-events-none transition-opacity duration-300">
-            <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[96vh]">
+        <!-- Game Over Screen Overlay (Houses Ad for Replaying / Returning Players) -->
+        <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-2 bg-slate-950/85 backdrop-blur-md text-center opacity-0 pointer-events-none transition-opacity duration-300">
+            <div class="glass-card w-full max-w-xs p-3 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[98vh]">
                 
                 <div class="flex flex-col items-center">
-                    <span class="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Game Over</span>
-                    <h2 class="font-orbitron text-xl font-black text-white">APEX CRASH</h2>
+                    <span class="text-[9px] font-bold text-rose-400 uppercase tracking-widest">Game Over</span>
+                    <h2 class="font-orbitron text-base font-black text-white">APEX CRASH</h2>
                 </div>
 
                 <!-- Score Board -->
-                <div class="w-full bg-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 flex flex-col space-y-1.5">
+                <div class="w-full bg-slate-900/90 rounded-xl p-2 border border-slate-800/80 flex flex-col space-y-1">
                     <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-semibold text-slate-400 uppercase">Score</span>
-                        <span id="finalScore" class="font-orbitron text-lg font-black text-rose-400">0</span>
+                        <span class="text-[9px] font-semibold text-slate-400 uppercase">Score</span>
+                        <span id="finalScore" class="font-orbitron text-sm font-black text-rose-400">0</span>
                     </div>
                     <div class="w-full h-[1px] bg-slate-800"></div>
                     <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-semibold text-slate-400 uppercase">Best Score</span>
-                        <span id="bestScore" class="font-orbitron text-lg font-black text-amber-400">0</span>
+                        <span class="text-[9px] font-semibold text-slate-400 uppercase">Best Score</span>
+                        <span id="bestScore" class="font-orbitron text-sm font-black text-amber-400">0</span>
                     </div>
                 </div>
 
                 <!-- High Score Record Badge -->
-                <div id="newRecordBadge" class="hidden px-3 py-0.5 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full text-slate-950 font-orbitron text-[9px] font-black tracking-wider uppercase shadow-lg animate-bounce">
+                <div id="newRecordBadge" class="hidden px-2.5 py-0.5 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full text-slate-950 font-orbitron text-[8px] font-black tracking-wider uppercase shadow-lg animate-bounce">
                     ★ NEW HIGH SCORE ★
                 </div>
 
+                <!-- BEGIN AADS AD UNIT #2458775 (Game Over Screen for Repeating Players) -->
+                <div id="frameGameOver" style="width: 300px; margin: auto; height: auto;">
+                    <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=300x250' style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
+                </div>
+                <!-- END AADS AD UNIT #2458775 -->
+
                 <!-- Action Buttons -->
-                <div class="w-full space-y-1.5">
-                    <button id="restartBtn" class="pulse-btn w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
+                <div class="w-full space-y-1">
+                    <button id="restartBtn" class="pulse-btn w-full py-2 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
                         PLAY AGAIN
                     </button>
-                    <button id="openLeaderboardGameOverBtn" class="w-full py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-[11px] tracking-wider text-indigo-300 border border-indigo-500/30 active:scale-95 transition-all">
+                    <button id="openLeaderboardGameOverBtn" class="w-full py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-[10px] tracking-wider text-indigo-300 border border-indigo-500/30 active:scale-95 transition-all">
                         VIEW LEADERBOARD
                     </button>
                 </div>
