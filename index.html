@@ -153,38 +153,44 @@
             </div>
         </div>
 
-        <!-- Start Screen Overlay -->
-        <div id="startScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 bg-slate-950/75 backdrop-blur-sm text-center">
-            <div class="flex flex-col items-center mb-6">
+        <!-- Start Screen Overlay (Fully visible on load for A-Ads Bot Verification) -->
+        <div id="startScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm text-center overflow-y-auto">
+            <div class="flex flex-col items-center mb-3">
                 <div class="inline-block px-3 py-1 mb-1 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-xs font-bold tracking-widest uppercase">
                     Arcade Mobile Edition
                 </div>
-                <h1 class="font-orbitron text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-rose-500 via-purple-400 to-indigo-400 glow-text mb-0.5">
+                <h1 class="font-orbitron text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-rose-500 via-purple-400 to-indigo-400 glow-text mb-0.5">
                     FLAPPY APEX
                 </h1>
-                <p class="text-xs font-bold tracking-wide text-rose-400 mb-2">
+                <p class="text-xs font-bold tracking-wide text-rose-400 mb-1">
                     Created by Jack vaughan
                 </p>
-                <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-700/50">
+                <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-0.5 rounded-full border border-slate-700/50">
                     <span class="text-[11px] text-slate-400">Player:</span>
                     <span id="displayNickname" class="font-orbitron text-xs font-bold text-indigo-400">---</span>
                 </div>
             </div>
 
+            <!-- BEGIN AADS AD UNIT #2458775 (Directly visible on Start Menu for Crawler Validation) -->
+            <div id="frame" style="width: 260px; margin: 8px auto; z-index: 99998; height: auto;">
+                <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=250x250' style='border:0; padding:0; width:250px; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
+            </div>
+            <!-- END AADS AD UNIT #2458775 -->
+
             <!-- Menu Action Buttons -->
-            <div class="w-full max-w-xs space-y-3">
-                <button id="startBtn" class="pulse-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-lg tracking-wider text-white shadow-xl active:scale-95 transition-transform duration-100">
+            <div class="w-full max-w-xs space-y-2 mt-2">
+                <button id="startBtn" class="pulse-btn w-full py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-base tracking-wider text-white shadow-xl active:scale-95 transition-transform duration-100">
                     TAP TO PLAY
                 </button>
-                <button id="openLeaderboardStartBtn" class="w-full py-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-sm tracking-wider text-indigo-300 border border-indigo-500/30 shadow-md active:scale-95 transition-all">
+                <button id="openLeaderboardStartBtn" class="w-full py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-xs tracking-wider text-indigo-300 border border-indigo-500/30 shadow-md active:scale-95 transition-all">
                     VIEW LEADERBOARD
                 </button>
             </div>
         </div>
 
-        <!-- Game Over Screen Overlay (Opacity-based for Ad Crawler Compatibility) -->
+        <!-- Game Over Screen Overlay -->
         <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-3 bg-slate-950/85 backdrop-blur-md text-center opacity-0 pointer-events-none transition-opacity duration-300">
-            <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[96vh]">
+            <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-3 border border-slate-700/60 shadow-2xl">
                 
                 <div class="flex flex-col items-center">
                     <span class="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Game Over</span>
@@ -209,18 +215,12 @@
                     ★ NEW HIGH SCORE ★
                 </div>
 
-                <!-- BEGIN AADS AD UNIT #2458775 -->
-                <div id="frame" style="width: 300px; margin: auto; z-index: 99998; height: auto;">
-                    <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=300x250' style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
-                </div>
-                <!-- END AADS AD UNIT #2458775 -->
-
                 <!-- Action Buttons -->
-                <div class="w-full space-y-1.5">
-                    <button id="restartBtn" class="pulse-btn w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
+                <div class="w-full space-y-2">
+                    <button id="restartBtn" class="pulse-btn w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
                         PLAY AGAIN
                     </button>
-                    <button id="openLeaderboardGameOverBtn" class="w-full py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-[11px] tracking-wider text-indigo-300 border border-indigo-500/30 active:scale-95 transition-all">
+                    <button id="openLeaderboardGameOverBtn" class="w-full py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-[11px] tracking-wider text-indigo-300 border border-indigo-500/30 active:scale-95 transition-all">
                         VIEW LEADERBOARD
                     </button>
                 </div>
