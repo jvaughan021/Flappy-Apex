@@ -114,28 +114,28 @@
             </div>
         </div>
 
-        <!-- PERMANENT PERSISTENT AD CONTAINER (Always visible in DOM on initial load for crawler compliance) -->
-        <div class="absolute bottom-2 left-0 right-0 z-15 flex justify-center pointer-events-auto">
-            <div id="frame" style="width: 250px; margin: auto; height: auto;">
-                <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=250x250' style='border:0; padding:0; width:250px; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
-            </div>
-        </div>
-
-        <!-- Nickname Registration Overlay (First Launch) -->
-        <div id="nicknameScreen" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 bg-slate-950/90 backdrop-blur-md text-center hidden">
-            <div class="glass-card w-full max-w-xs p-6 rounded-3xl flex flex-col items-center space-y-4 border border-slate-700/60 shadow-2xl">
+        <!-- Nickname Registration Overlay (First Launch - Houses Ad for Immediate Crawler Validation) -->
+        <div id="nicknameScreen" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md text-center hidden">
+            <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-3 border border-slate-700/60 shadow-2xl max-h-[96vh] overflow-y-auto">
                 <div class="inline-block px-3 py-1 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-xs font-bold tracking-widest uppercase">
                     Secure Leaderboard
                 </div>
-                <h2 class="font-orbitron text-2xl font-black text-white">CHOOSE HANDLE</h2>
-                <p class="text-xs text-slate-300 leading-relaxed">
-                    Pick a unique nickname. This handle will be locked to your global scores and cannot be changed or stolen by others.
+                <h2 class="font-orbitron text-xl font-black text-white">CHOOSE HANDLE</h2>
+                <p class="text-[11px] text-slate-300 leading-relaxed">
+                    Pick a unique nickname. This handle will be locked to your global scores.
                 </p>
-                <div class="w-full space-y-2">
-                    <input type="text" id="nicknameInput" maxlength="14" placeholder="Enter unique nickname..." class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white font-orbitron text-sm text-center focus:outline-none focus:border-indigo-500 transition-colors">
-                    <p id="nicknameError" class="text-xs text-rose-400 font-semibold h-4"></p>
+                <div class="w-full space-y-1">
+                    <input type="text" id="nicknameInput" maxlength="14" placeholder="Enter nickname..." class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white font-orbitron text-xs text-center focus:outline-none focus:border-indigo-500 transition-colors">
+                    <p id="nicknameError" class="text-xs text-rose-400 font-semibold h-3"></p>
                 </div>
-                <button id="saveNicknameBtn" class="pulse-btn w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-sm tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
+
+                <!-- BEGIN AADS AD UNIT #2458775 -->
+                <div style="width: 200px; margin: auto; height: auto;">
+                    <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=200x200' style='border:0; padding:0; width:200px; height:200px; overflow:hidden; display:block; margin:auto;'></iframe>
+                </div>
+                <!-- END AADS AD UNIT #2458775 -->
+
+                <button id="saveNicknameBtn" class="pulse-btn w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
                     CLAIM HANDLE & PLAY
                 </button>
             </div>
