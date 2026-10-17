@@ -116,26 +116,26 @@
 
         <!-- Nickname Registration Overlay (First Launch - Houses Ad for Immediate Crawler Validation) -->
         <div id="nicknameScreen" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md text-center hidden">
-            <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-3 border border-slate-700/60 shadow-2xl max-h-[96vh] overflow-y-auto">
-                <div class="inline-block px-3 py-1 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-xs font-bold tracking-widest uppercase">
+            <div class="glass-card w-full max-w-sm p-4 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl max-h-[96vh] overflow-y-auto">
+                <div class="inline-block px-3 py-1 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-[10px] font-bold tracking-widest uppercase">
                     Secure Leaderboard
                 </div>
-                <h2 class="font-orbitron text-xl font-black text-white">CHOOSE HANDLE</h2>
-                <p class="text-[11px] text-slate-300 leading-relaxed">
+                <h2 class="font-orbitron text-lg font-black text-white">CHOOSE HANDLE</h2>
+                <p class="text-[10px] text-slate-300 leading-relaxed">
                     Pick a unique nickname. This handle will be locked to your global scores.
                 </p>
                 <div class="w-full space-y-1">
-                    <input type="text" id="nicknameInput" maxlength="14" placeholder="Enter nickname..." class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white font-orbitron text-xs text-center focus:outline-none focus:border-indigo-500 transition-colors">
-                    <p id="nicknameError" class="text-xs text-rose-400 font-semibold h-3"></p>
+                    <input type="text" id="nicknameInput" maxlength="14" placeholder="Enter nickname..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white font-orbitron text-xs text-center focus:outline-none focus:border-indigo-500 transition-colors">
+                    <p id="nicknameError" class="text-[10px] text-rose-400 font-semibold h-3"></p>
                 </div>
 
-                <!-- BEGIN AADS AD UNIT #2458775 -->
-                <div style="width: 200px; margin: auto; height: auto;">
-                    <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=200x200' style='border:0; padding:0; width:200px; height:200px; overflow:hidden; display:block; margin:auto;'></iframe>
+                <!-- BEGIN AADS AD UNIT #2458775 (Matched to 300x250) -->
+                <div id="frame" style="width: 300px; margin: auto; height: auto;">
+                    <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=300x250' style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
                 </div>
                 <!-- END AADS AD UNIT #2458775 -->
 
-                <button id="saveNicknameBtn" class="pulse-btn w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
+                <button id="saveNicknameBtn" class="pulse-btn w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
                     CLAIM HANDLE & PLAY
                 </button>
             </div>
