@@ -154,7 +154,7 @@
         </div>
 
         <!-- Start Screen Overlay -->
-        <div id="startScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 bg-slate-950/75 backdrop-blur-sm text-center hidden">
+        <div id="startScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 bg-slate-950/75 backdrop-blur-sm text-center">
             <div class="flex flex-col items-center mb-6">
                 <div class="inline-block px-3 py-1 mb-1 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-xs font-bold tracking-widest uppercase">
                     Arcade Mobile Edition
@@ -182,8 +182,8 @@
             </div>
         </div>
 
-        <!-- Game Over Screen Overlay -->
-        <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-3 bg-slate-950/85 backdrop-blur-md text-center hidden">
+        <!-- Game Over Screen Overlay (Opacity-based for Ad Crawler Compatibility) -->
+        <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-3 bg-slate-950/85 backdrop-blur-md text-center opacity-0 pointer-events-none transition-opacity duration-300">
             <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[96vh]">
                 
                 <div class="flex flex-col items-center">
@@ -263,7 +263,6 @@
             const openLeaderboardGameOverBtn = document.getElementById('openLeaderboardGameOverBtn');
             const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
 
-            // Robust mobile screen state handler
             if (userNickname && userNickname.trim() !== '') {
                 nicknameScreen.classList.add('hidden');
                 startScreen.classList.remove('hidden');
@@ -889,7 +888,7 @@
 
             setTimeout(() => {
                 hud.classList.add('opacity-0');
-                gameOverScreen.classList.remove('hidden');
+                gameOverScreen.classList.remove('opacity-0', 'pointer-events-none');
             }, 300);
         }
 
@@ -901,7 +900,7 @@
             obstacles.reset();
 
             startScreen.classList.add('hidden');
-            gameOverScreen.classList.add('hidden');
+            gameOverScreen.classList.add('opacity-0', 'pointer-events-none');
             hud.classList.remove('opacity-0');
 
             gameState = 'PLAYING';
@@ -962,7 +961,7 @@
                     startNewGame();
                 } else if (gameState === 'PLAYING') {
                     player.jump();
-                } else if (gameState === 'GAMEOVER' && !gameOverScreen.classList.contains('hidden')) {
+                } else if (gameState === 'GAMEOVER' && !gameOverScreen.classList.contains('pointer-events-none')) {
                     startNewGame();
                 }
             }
