@@ -488,6 +488,12 @@
                         pipeManager.pipes = pipeManager.pipes.filter(p => p.x > player.x + 140);
                     }
                     
+                    // Ensure HUD is visible and shows current score correctly
+                    const hud = document.getElementById('hud');
+                    if (hud) hud.classList.remove('opacity-0');
+                    const hudCurrentScore = document.getElementById('hudCurrentScore');
+                    if (hudCurrentScore) hudCurrentScore.textContent = score;
+
                     if (typeof gameState !== 'undefined') {
                         gameState = 'PLAYING';
                     }
