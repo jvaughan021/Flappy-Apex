@@ -96,10 +96,15 @@
 
     <div id="gameContainer" class="relative w-full h-full max-w-md max-h-full sm:max-h-[920px] aspect-[9/16] bg-slate-900 shadow-2xl overflow-hidden flex flex-col justify-between sm:rounded-3xl border-0 sm:border-2 border-slate-800/80">
         
+        <!-- Game Area Wrapper -->
         <div class="relative w-full flex-1 overflow-hidden">
+            <!-- Game Canvas -->
             <canvas id="gameCanvas" class="absolute inset-0 w-full h-full z-0 cursor-pointer block"></canvas>
+
+            <!-- Flash Effect Overlay -->
             <div id="flashOverlay" class="flash-overlay"></div>
 
+            <!-- Active Gameplay HUD -->
             <div id="hud" class="relative z-10 p-4 flex justify-between items-center pointer-events-none transition-opacity duration-300 opacity-0">
                 <div class="flex items-center space-x-2 bg-slate-900/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-slate-700/50">
                     <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Best</span>
@@ -110,6 +115,7 @@
                 </div>
             </div>
 
+            <!-- Nickname Registration Overlay (First Launch) -->
             <div id="nicknameScreen" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-3 bg-slate-950/90 backdrop-blur-md text-center hidden">
                 <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-3 border border-slate-700/60 shadow-2xl max-h-[98vh] overflow-y-auto pointer-events-auto">
                     <div class="inline-block px-2.5 py-0.5 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-[10px] font-bold tracking-widest uppercase">
@@ -130,6 +136,7 @@
                 </div>
             </div>
 
+            <!-- Separate Leaderboard Modal Overlay -->
             <div id="leaderboardModal" class="absolute inset-0 z-40 flex flex-col items-center justify-center p-6 bg-slate-950/90 backdrop-blur-md text-center hidden">
                 <div class="glass-card w-full max-w-xs p-5 rounded-3xl flex flex-col items-center space-y-4 border border-slate-700/60 shadow-2xl pointer-events-auto">
                     <div class="flex flex-col items-center">
@@ -147,6 +154,7 @@
                 </div>
             </div>
 
+            <!-- Start Screen Overlay -->
             <div id="startScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 bg-slate-950/75 backdrop-blur-sm text-center pointer-events-auto hidden">
                 <div class="flex flex-col items-center mb-6">
                     <div class="inline-block px-3 py-1 mb-1 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-xs font-bold tracking-widest uppercase">
@@ -199,7 +207,7 @@
                         ★ NEW HIGH SCORE ★
                     </div>
 
-                    <!-- NATIVE HTML ANCHOR TAG LINK (100% physically isolated from JS and Tap to Play) -->
+                    <!-- NATIVE HTML ANCHOR TAG REVIVE BUTTON (100% Safe HTML Link) -->
                     <a id="smartLinkReviveBtn" href="https://asiafilm.org/4/f7943451430b0a3e1a3e4a51b58bc5ca" target="_blank" rel="noopener noreferrer" class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer flex items-center justify-center space-x-1.5 no-underline">
                         <span>🎁 REVIVE (SPONSOR)</span>
                     </a>
@@ -218,6 +226,7 @@
 
     </div>
 
+    <!-- Firebase & Leaderboard Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getDatabase, ref, get, set, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -252,7 +261,6 @@
             const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
             const smartLinkReviveBtn = document.getElementById('smartLinkReviveBtn');
 
-            // Handle in-game revive trigger when the link is clicked
             if (smartLinkReviveBtn) {
                 smartLinkReviveBtn.addEventListener('click', (e) => {
                     if (window.hasRevivedThisGame) {
@@ -427,6 +435,7 @@
         };
     </script>
 
+    <!-- Main Game Engine Script -->
     <script>
         window.hasRevivedThisGame = false;
 
@@ -457,14 +466,6 @@
             }
         };
 
-        if ('audioSession' in navigator) {
-            try {
-                navigator.audioSession.type = 'playback';
-            } catch (e) {
-                console.log('AudioSession setting not supported:', e);
-            }
-        }
-
         class SoundEngine {
             constructor() {
                 this.ctx = null;
@@ -474,15 +475,9 @@
             init() {
                 if (!this.ctx) {
                     const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                    if (AudioCtx) {
-                        this.ctx = new AudioCtx();
-                    }
+                    if (AudioCtx) this.ctx = new AudioCtx();
                 }
-
-                if (this.ctx && this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
                 if (this.ctx && !this.isUnlocked) {
                     const buffer = this.ctx.createBuffer(1, 1, 22050);
                     const source = this.ctx.createBufferSource();
@@ -496,76 +491,55 @@
             playJump() {
                 if (!this.ctx) return;
                 this.init();
-
                 try {
                     const osc = this.ctx.createOscillator();
                     const gain = this.ctx.createGain();
-
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(320, this.ctx.currentTime);
                     osc.frequency.exponentialRampToValueAtTime(780, this.ctx.currentTime + 0.12);
-
                     gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.12);
-
                     osc.connect(gain);
                     gain.connect(this.ctx.destination);
-
                     osc.start(this.ctx.currentTime);
                     osc.stop(this.ctx.currentTime + 0.12);
-                } catch (e) {
-                    console.log('Audio error:', e);
-                }
+                } catch (e) {}
             }
 
             playPoint() {
                 if (!this.ctx) return;
                 this.init();
-
                 try {
                     const osc = this.ctx.createOscillator();
                     const gain = this.ctx.createGain();
-
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(523.25, this.ctx.currentTime);
                     osc.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.08);
-
                     gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
-
                     osc.connect(gain);
                     gain.connect(this.ctx.destination);
-
                     osc.start(this.ctx.currentTime);
                     osc.stop(this.ctx.currentTime + 0.25);
-                } catch (e) {
-                    console.log('Audio error:', e);
-                }
+                } catch (e) {}
             }
 
             playCrash() {
                 if (!this.ctx) return;
                 this.init();
-
                 try {
                     const osc = this.ctx.createOscillator();
                     const gain = this.ctx.createGain();
-
                     osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(160, this.ctx.currentTime);
                     osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.35);
-
                     gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.35);
-
                     osc.connect(gain);
                     gain.connect(this.ctx.destination);
-
                     osc.start(this.ctx.currentTime);
                     osc.stop(this.ctx.currentTime + 0.35);
-                } catch (e) {
-                    console.log('Audio error:', e);
-                }
+                } catch (e) {}
             }
         }
 
@@ -585,13 +559,13 @@
         const startBtn = document.getElementById('startBtn');
         const restartBtn = document.getElementById('restartBtn');
         const flashOverlay = document.getElementById('flashOverlay');
-        const gameContainer = document.getElementById('gameContainer');
 
         let gameState = 'START';
         let animationFrameId = null;
         let score = 0;
         let highScore = parseInt(localStorage.getItem('flappyApex_highScore') || '0', 10);
-        let screenShakeTime = 0;
+        let pipes = [];
+        let frameCount = 0;
 
         hudBestScore.textContent = highScore;
 
@@ -648,7 +622,6 @@
             update() {
                 this.velocity += this.gravity;
                 this.y += this.velocity;
-
                 this.rotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 5, this.velocity * 0.08));
 
                 for (let i = this.particles.length - 1; i >= 0; i--) {
@@ -656,9 +629,7 @@
                     p.x += p.vx;
                     p.y += p.vy;
                     p.alpha -= p.decay;
-                    if (p.alpha <= 0) {
-                        this.particles.splice(i, 1);
-                    }
+                    if (p.alpha <= 0) this.particles.splice(i, 1);
                 }
             },
 
@@ -695,34 +666,172 @@
                 ctx.arc(w * 0.15, -h * 0.1, 5 * scale, 0, Math.PI * 2);
                 ctx.fill();
 
-                if (gameState === 'PLAYING') {
-                    ctx.fillStyle = '#f59e0b';
-                    ctx.beginPath();
-                    ctx.moveTo(-w/2, -h*0.2);
-                    ctx.lineTo(-w/2 - (Math.random() * 8 + 4) * scale, 0);
-                    ctx.lineTo(-w/2, h*0.2);
-                    ctx.closePath();
-                    ctx.fill();
-                }
-
                 ctx.restore();
             }
         };
 
-        if (restartBtn) {
-            restartBtn.addEventListener('click', () => {
-                if (typeof window.resetReviveStatus === 'function') {
-                    window.resetReviveStatus();
-                }
+        function spawnPipe() {
+            const minHeight = 60;
+            const maxHeight = V_HEIGHT - 220;
+            const topHeight = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
+            const gap = 135;
+
+            pipes.push({
+                x: V_WIDTH,
+                top: topHeight,
+                bottom: V_HEIGHT - topHeight - gap,
+                passed: false
             });
         }
+
+        function triggerGameOver() {
+            gameState = 'GAMEOVER';
+            sound.playCrash();
+
+            flashOverlay.style.opacity = '0.7';
+            setTimeout(() => { flashOverlay.style.opacity = '0'; }, 150);
+
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('flappyApex_highScore', highScore);
+                hudBestScore.textContent = highScore;
+                newRecordBadge.classList.remove('hidden');
+            } else {
+                newRecordBadge.classList.add('hidden');
+            }
+
+            finalScoreEl.textContent = score;
+            bestScoreEl.textContent = highScore;
+
+            gameOverScreen.classList.remove('opacity-0', 'pointer-events-none');
+            hud.classList.add('opacity-0');
+
+            if (typeof window.submitScoreToFirebase === 'function') {
+                window.submitScoreToFirebase(score);
+            }
+        }
+
+        function updateGame() {
+            if (gameState !== 'PLAYING') return;
+
+            frameCount++;
+            if (frameCount % 100 === 0) {
+                spawnPipe();
+            }
+
+            player.update();
+
+            // Floor/Ceiling collision
+            if (player.y + player.height >= V_HEIGHT - 40 || player.y <= 0) {
+                triggerGameOver();
+            }
+
+            for (let i = pipes.length - 1; i >= 0; i--) {
+                pipes[i].x -= 2.8;
+
+                // Collision detection
+                if (
+                    player.x < pipes[i].x + 52 &&
+                    player.x + player.width > pipes[i].x &&
+                    (player.y < pipes[i].top || player.y + player.height > V_HEIGHT - pipes[i].bottom)
+                ) {
+                    triggerGameOver();
+                }
+
+                if (!pipes[i].passed && pipes[i].x + 52 < player.x) {
+                    pipes[i].passed = true;
+                    score++;
+                    hudCurrentScore.textContent = score;
+                    hudCurrentScore.classList.add('pop-score');
+                    setTimeout(() => hudCurrentScore.classList.remove('pop-score'), 250);
+                    sound.playPoint();
+                }
+
+                if (pipes[i].x < -60) {
+                    pipes.splice(i, 1);
+                }
+            }
+        }
+
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Background grid / stars
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Pipes
+            pipes.forEach(pipe => {
+                const pipeWidth = 52 * scale;
+                const topH = pipe.top * scale;
+                const botH = pipe.bottom * scale;
+                const pipeX = pipe.x * scale;
+
+                ctx.fillStyle = '#10b981';
+                ctx.fillRect(pipeX, 0, pipeWidth, topH);
+                ctx.fillRect(pipeX, (V_HEIGHT - pipe.bottom) * scale, pipeWidth, botH);
+            });
+
+            // Draw Floor
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, (V_HEIGHT - 40) * scale, canvas.width, 40 * scale);
+
+            player.draw();
+        }
+
+        function gameLoop() {
+            updateGame();
+            drawGame();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function startGame() {
+            score = 0;
+            pipes = [];
+            frameCount = 0;
+            hudCurrentScore.textContent = '0';
+            player.reset();
+            window.resetReviveStatus();
+
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('opacity-0', 'pointer-events-none');
+            hud.classList.remove('opacity-0');
+
+            gameState = 'PLAYING';
+            sound.init();
+        }
+
+        // Input Listeners
+        window.addEventListener('pointerdown', (e) => {
+            if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
+            if (gameState === 'PLAYING') {
+                player.jump();
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp') {
+                if (e.target.tagName === 'INPUT') return;
+                e.preventDefault();
+                if (gameState === 'PLAYING') {
+                    player.jump();
+                }
+            }
+        });
+
         if (startBtn) {
             startBtn.addEventListener('click', () => {
-                if (typeof window.resetReviveStatus === 'function') {
-                    window.resetReviveStatus();
-                }
+                startGame();
             });
         }
+
+        if (restartBtn) {
+            restartBtn.addEventListener('click', () => {
+                startGame();
+            });
+        }
+
+        gameLoop();
     </script>
 </body>
 </html>
