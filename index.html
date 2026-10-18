@@ -212,6 +212,11 @@
                         ★ NEW HIGH SCORE ★
                     </div>
 
+                    <!-- Adsterra SmartLink Rewarded Revive Button -->
+                    <button id="smartLinkReviveBtn" class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer flex items-center justify-center space-x-1.5">
+                        <span>🎁 REVIVE (SPONSOR)</span>
+                    </button>
+
                     <!-- Action Buttons -->
                     <div class="w-full space-y-1">
                         <button id="restartBtn" class="pulse-btn w-full py-2 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer">
@@ -225,16 +230,9 @@
             </div>
         </div>
 
-        <!-- PERMANENT PERSISTENT A-ADS FOOTER (Fully visible, responsive, and non-blocking) -->
-        <div class="relative z-20 w-full flex-shrink-0 bg-slate-950 border-t border-slate-800/80 py-1.5 flex justify-center items-center pointer-events-auto">
-            <div id="framePersistent" style="width: 100%; max-width: 300px; margin: auto; height: auto; display: flex; justify-content: center;">
-                <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=responsive' style='border:0; padding:0; width:100%; max-width:300px; height:60px; overflow:hidden; display:block; margin:auto;'></iframe>
-            </div>
-        </div>
-
     </div>
 
-    <!-- Firebase SDKs via CDN -->
+    <!-- Firebase & Adsterra SmartLink Integration Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getDatabase, ref, get, set, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -267,6 +265,21 @@
             const openLeaderboardStartBtn = document.getElementById('openLeaderboardStartBtn');
             const openLeaderboardGameOverBtn = document.getElementById('openLeaderboardGameOverBtn');
             const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
+            const smartLinkReviveBtn = document.getElementById('smartLinkReviveBtn');
+
+            // Wire up SmartLink Revive Button
+            if (smartLinkReviveBtn) {
+                smartLinkReviveBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Open Adsterra SmartLink in a new tab
+                    window.open('https://asiafilm.org/4/f7943451430b0a3e1a3e4a51b58bc5ca', '_blank');
+                    
+                    // Trigger in-game revive
+                    if (typeof window.reviveGamePlayer === 'function') {
+                        window.reviveGamePlayer();
+                    }
+                });
+            }
 
             if (userNickname && userNickname.trim() !== '') {
                 nicknameScreen.classList.add('hidden');
@@ -425,6 +438,24 @@
     </script>
 
     <script>
+        // Revive game function hooked up directly
+        window.reviveGamePlayer = function() {
+            const gameOverScreen = document.getElementById('gameOverScreen');
+            if (gameOverScreen) {
+                gameOverScreen.classList.add('opacity-0', 'pointer-events-none');
+            }
+            
+            if (typeof player !== 'undefined') {
+                player.x = 70;
+                player.y = 320 / 2;
+                player.velocity = -4; // Gentle upward boost
+            }
+            
+            if (typeof gameState !== 'undefined') {
+                gameState = 'PLAYING';
+            }
+        };
+
         if ('audioSession' in navigator) {
             try {
                 navigator.audioSession.type = 'playback';
@@ -676,256 +707,6 @@
                 ctx.restore();
             }
         };
-
-        const background = {
-            clouds: [
-                { x: 40, y: 50, scale: 0.8, speed: 0.3 },
-                { x: 200, y: 90, scale: 1.2, speed: 0.5 },
-                { x: 320, y: 40, scale: 0.6, speed: 0.2 }
-            ],
-
-            update() {
-                if (gameState === 'GAMEOVER') return;
-                this.clouds.forEach(c => {
-                    c.x -= c.speed;
-                    if (c.x < -80) c.x = V_WIDTH + 40;
-                });
-            },
-
-            draw() {
-                const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                skyGradient.addColorStop(0, '#0f172a');
-                skyGradient.addColorStop(0.5, '#1e1b4b');
-                skyGradient.addColorStop(1, '#311042');
-                ctx.fillStyle = skyGradient;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-                this.clouds.forEach(c => {
-                    ctx.beginPath();
-                    ctx.arc(c.x * scale, c.y * scale, 22 * c.scale * scale, 0, Math.PI * 2);
-                    ctx.arc((c.x + 12) * scale, (c.y - 8) * scale, 16 * c.scale * scale, 0, Math.PI * 2);
-                    ctx.arc((c.x + 24) * scale, c.y * scale, 18 * c.scale * scale, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-            }
-        };
-
-        const pipes = {
-            list: [],
-            speed: 2.4,
-            spawnTimer: 0,
-            spawnInterval: 100,
-            width: 56,
-            gap: 135,
-
-            reset() {
-                this.list = [];
-                this.spawnTimer = 0;
-            },
-
-            update() {
-                if (gameState !== 'PLAYING') return;
-
-                this.spawnTimer++;
-                if (this.spawnTimer >= this.spawnInterval) {
-                    this.spawnTimer = 0;
-                    const minHeight = 60;
-                    const maxHeight = V_HEIGHT - 180 - this.gap;
-                    const topHeight = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
-
-                    this.list.push({
-                        x: V_WIDTH + 20,
-                        top: topHeight,
-                        bottom: topHeight + this.gap,
-                        passed: false
-                    });
-                }
-
-                for (let i = this.list.length - 1; i >= 0; i--) {
-                    const p = this.list[i];
-                    p.x -= this.speed;
-
-                    if (!p.passed && p.x + this.width < player.x) {
-                        p.passed = true;
-                        score++;
-                        hudCurrentScore.textContent = score;
-                        hudCurrentScore.classList.add('pop-score');
-                        setTimeout(() => hudCurrentScore.classList.remove('pop-score'), 250);
-                        sound.playPoint();
-                    }
-
-                    if (p.x + this.width < -30) {
-                        this.list.splice(i, 1);
-                    }
-                }
-            },
-
-            draw() {
-                this.list.forEach(p => {
-                    const x = p.x * scale;
-                    const w = this.width * scale;
-
-                    const pipeGrad = ctx.createLinearGradient(x, 0, x + w, 0);
-                    pipeGrad.addColorStop(0, '#4f46e5');
-                    pipeGrad.addColorStop(0.5, '#818cf8');
-                    pipeGrad.addColorStop(1, '#3730a3');
-
-                    ctx.fillStyle = pipeGrad;
-                    ctx.fillRect(x, 0, w, p.top * scale);
-                    ctx.fillRect(x - 3 * scale, (p.top - 18) * scale, w + 6 * scale, 18 * scale);
-
-                    const bottomY = p.bottom * scale;
-                    ctx.fillRect(x, bottomY, w, (canvas.height - bottomY));
-                    ctx.fillRect(x - 3 * scale, bottomY, w + 6 * scale, 18 * scale);
-                });
-            }
-        };
-
-        function checkCollisions() {
-            if (player.y + player.height >= V_HEIGHT - 10 || player.y <= 0) {
-                triggerGameOver();
-                return;
-            }
-
-            for (let i = 0; i < pipes.list.length; i++) {
-                const p = pipes.list[i];
-                
-                if (
-                    player.x + player.width - 4 > p.x &&
-                    player.x + 4 < p.x + pipes.width &&
-                    (player.y + 4 < p.top || player.y + player.height - 4 > p.bottom)
-                ) {
-                    triggerGameOver();
-                    return;
-                }
-            }
-        }
-
-        function triggerGameOver() {
-            gameState = 'GAMEOVER';
-            sound.playCrash();
-            screenShakeTime = 15;
-
-            flashOverlay.style.opacity = '0.7';
-            setTimeout(() => flashOverlay.style.opacity = '0', 150);
-
-            hud.style.opacity = '0';
-            hud.style.pointerEvents = 'none';
-
-            finalScoreEl.textContent = score;
-
-            if (score > highScore) {
-                highScore = score;
-                localStorage.setItem('flappyApex_highScore', highScore);
-                hudBestScore.textContent = highScore;
-                newRecordBadge.classList.remove('hidden');
-            } else {
-                newRecordBadge.classList.add('hidden');
-            }
-
-            bestScoreEl.textContent = highScore;
-            gameOverScreen.classList.remove('hidden');
-            gameOverScreen.style.opacity = '1';
-            gameOverScreen.style.pointerEvents = 'auto';
-
-            window.submitScoreToFirebase(score);
-        }
-
-        function resetGame() {
-            sound.init(); // Ensure audio context is unlocked
-            score = 0;
-            hudCurrentScore.textContent = score;
-            player.reset();
-            pipes.reset();
-            gameOverScreen.style.opacity = '0';
-            gameOverScreen.style.pointerEvents = 'none';
-            gameOverScreen.classList.add('hidden');
-            startScreen.classList.add('hidden');
-            hud.style.opacity = '1';
-            hud.style.pointerEvents = 'none';
-            gameState = 'PLAYING';
-        }
-
-        function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            ctx.save();
-            if (screenShakeTime > 0) {
-                screenShakeTime--;
-                const shakeX = (Math.random() - 0.5) * 8;
-                const shakeY = (Math.random() - 0.5) * 8;
-                ctx.translate(shakeX, shakeY);
-            }
-
-            background.update();
-            background.draw();
-
-            pipes.update();
-            pipes.draw();
-
-            if (gameState === 'PLAYING') {
-                player.update();
-            }
-            player.draw();
-
-            if (gameState === 'PLAYING') {
-                checkCollisions();
-            }
-
-            ctx.restore();
-            animationFrameId = requestAnimationFrame(gameLoop);
-        }
-
-        function handleInput(e) {
-            if (e) e.preventDefault();
-            sound.init(); // Explicitly unlock audio on every tap/click
-            
-            if (gameState === 'START') {
-                if (userNickname && userNickname.trim() !== '') {
-                    startScreen.classList.add('hidden');
-                    hud.style.opacity = '1';
-                    gameState = 'PLAYING';
-                }
-            } else if (gameState === 'PLAYING') {
-                player.jump();
-            } else if (gameState === 'GAMEOVER') {
-                resetGame();
-            }
-        }
-
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' || e.code === 'ArrowUp') {
-                handleInput(e);
-            }
-        });
-
-        canvas.addEventListener('pointerdown', (e) => {
-            handleInput(e);
-        });
-
-        if (startBtn) {
-            startBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                sound.init(); // Explicitly unlock audio on button click
-                if (userNickname && userNickname.trim() !== '') {
-                    startScreen.classList.add('hidden');
-                    hud.style.opacity = '1';
-                    gameState = 'PLAYING';
-                }
-            });
-        }
-
-        if (restartBtn) {
-            restartBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                sound.init(); // Explicitly unlock audio on restart
-                resetGame();
-            });
-        }
-
-        background.draw();
-        animationFrameId = requestAnimationFrame(gameLoop);
     </script>
 </body>
 </html>
