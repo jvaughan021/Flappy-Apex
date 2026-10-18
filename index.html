@@ -251,7 +251,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        let userNickname = localStorage.getItem('flappyApex_nickname'] || '';
+        let userNickname = localStorage.getItem('flappyApex_nickname') || '';
 
         window.addEventListener('DOMContentLoaded', () => {
             const nicknameScreen = document.getElementById('nicknameScreen');
@@ -1057,7 +1057,7 @@
         }
 
         function startGame() {
-            score = 0; // Fresh game starts at 0 score
+            score = 0;
             hudCurrentScore.textContent = '0';
             player.reset();
             pipeManager.reset();
