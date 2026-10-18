@@ -267,7 +267,7 @@
             const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
             const smartLinkReviveBtn = document.getElementById('smartLinkReviveBtn');
 
-            // Strictly isolated SmartLink Revive Button handler
+            // Strictly isolated SmartLink Revive Button handler with pause/resume support
             if (smartLinkReviveBtn) {
                 smartLinkReviveBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -280,13 +280,13 @@
                     smartLinkReviveBtn.disabled = true;
                     smartLinkReviveBtn.classList.add('opacity-50', 'cursor-not-allowed');
                     smartLinkReviveBtn.style.background = '#475569';
-                    smartLinkReviveBtn.querySelector('span').textContent = '✓ REVIVED ALREADY';
+                    smartLinkReviveBtn.querySelector('span').textContent = '✓ REVIVE CLAIMED';
 
                     // Open SmartLink safely in new tab
                     window.open('https://asiafilm.org/4/f7943451430b0a3e1a3e4a51b58bc5ca', '_blank');
 
-                    if (typeof window.reviveGamePlayer === 'function') {
-                        window.reviveGamePlayer();
+                    if (typeof window.prepareRevivePause === 'function') {
+                        window.prepareRevivePause();
                     }
                 });
             }
@@ -461,21 +461,39 @@
             }
         };
 
-        window.reviveGamePlayer = function() {
+        window.prepareRevivePause = function() {
             const gameOverScreen = document.getElementById('gameOverScreen');
             if (gameOverScreen) {
-                gameOverScreen.classList.add('opacity-0', 'pointer-events-none');
-                gameOverScreen.style.display = 'none';
-            }
-            
-            if (typeof player !== 'undefined') {
-                player.x = 70;
-                player.y = V_HEIGHT / 2 - 15;
-                player.velocity = -4;
-            }
-            
-            if (typeof gameState !== 'undefined') {
-                gameState = 'PLAYING';
+                gameOverScreen.innerHTML = `
+                    <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-3 border border-indigo-500/50 shadow-2xl pointer-events-auto text-center">
+                        <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Sponsor Visited</span>
+                        <h2 class="font-orbitron text-lg font-black text-white">READY TO FLY?</h2>
+                        <p class="text-[11px] text-slate-300">Tap below when you are back in the game to resume your run!</p>
+                        <button id="actualResumeBtn" class="pulse-btn w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform cursor-pointer">
+                            RESUME GAME NOW
+                        </button>
+                    </div>
+                `;
+
+                document.getElementById('actualResumeBtn').addEventListener('click', () => {
+                    gameOverScreen.style.display = 'none';
+                    gameOverScreen.classList.add('opacity-0', 'pointer-events-none');
+                    
+                    if (typeof player !== 'undefined') {
+                        player.x = 70;
+                        player.y = V_HEIGHT / 2 - 15;
+                        player.velocity = -4;
+                    }
+                    
+                    // Clear out pipes too close to spawn
+                    if (typeof pipeManager !== 'undefined' && pipeManager.pipes) {
+                        pipeManager.pipes = pipeManager.pipes.filter(p => p.x > player.x + 140);
+                    }
+                    
+                    if (typeof gameState !== 'undefined') {
+                        gameState = 'PLAYING';
+                    }
+                });
             }
         };
 
@@ -828,7 +846,7 @@
                     let botY = (V_HEIGHT - p.bottom) * scale;
                     let botH = p.bottom * scale;
 
-                    // Restored original translucent dark pipe body gradient
+                    // Translucent dark pipe body gradient
                     let pipeBodyGradTop = ctx.createLinearGradient(px, 0, px + pw, 0);
                     pipeBodyGradTop.addColorStop(0, 'rgba(15, 23, 42, 0.75)');
                     pipeBodyGradTop.addColorStop(0.5, 'rgba(30, 41, 59, 0.6)');
@@ -838,7 +856,7 @@
                     ctx.fillRect(px, 0, pw, topH);
                     ctx.fillRect(px, botY, pw, botH);
 
-                    // Original horizontal neon gradient lip matching your screenshot exactly
+                    // Original horizontal neon gradient lip
                     let capH = 24 * scale;
                     let capW = pw + 8 * scale;
                     let capX = px - 4 * scale;
@@ -929,6 +947,75 @@
 
             finalScoreEl.textContent = score;
             bestScoreEl.textContent = highScore;
+
+            // Reset game over screen content back to original if it was modified by pause screen
+            gameOverScreen.innerHTML = `
+                <div class="glass-card w-full max-w-xs p-3 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[98vh] pointer-events-auto">
+                    
+                    <div class="flex flex-col items-center">
+                        <span class="text-[9px] font-bold text-rose-400 uppercase tracking-widest">Game Over</span>
+                        <h2 class="font-orbitron text-base font-black text-white">APEX CRASH</h2>
+                    </div>
+
+                    <!-- Score Board -->
+                    <div class="w-full bg-slate-900/90 rounded-xl p-2 border border-slate-800/80 flex flex-col space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[9px] font-semibold text-slate-400 uppercase">Score</span>
+                            <span id="finalScore" class="font-orbitron text-sm font-black text-rose-400">${score}</span>
+                        </div>
+                        <div class="w-full h-[1px] bg-slate-800"></div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[9px] font-semibold text-slate-400 uppercase">Best Score</span>
+                            <span id="bestScore" class="font-orbitron text-sm font-black text-amber-400">${highScore}</span>
+                        </div>
+                    </div>
+
+                    <!-- High Score Record Badge -->
+                    <div id="newRecordBadge" class="${score >= highScore && score > 0 ? '' : 'hidden'} px-2.5 py-0.5 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full text-slate-950 font-orbitron text-[8px] font-black tracking-wider uppercase shadow-lg animate-bounce">
+                        ★ NEW HIGH SCORE ★
+                    </div>
+
+                    <!-- SmartLink Rewarded Revive Button (Limited to 1 per game) -->
+                    <button id="smartLinkReviveBtn" class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer flex items-center justify-center space-x-1.5">
+                        <span>🎁 REVIVE (SPONSOR)</span>
+                    </button>
+
+                    <!-- Action Buttons -->
+                    <div class="w-full space-y-1">
+                        <button id="restartBtn" class="pulse-btn w-full py-2 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer">
+                            PLAY AGAIN
+                        </button>
+                        <button id="openLeaderboardGameOverBtn" class="w-full py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-[10px] tracking-wider text-indigo-300 border border-indigo-500/30 active:scale-95 transition-all cursor-pointer">
+                            VIEW LEADERBOARD
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Re-bind listeners for newly injected game over buttons
+            document.getElementById('smartLinkReviveBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.hasRevivedThisGame) return;
+                window.hasRevivedThisGame = true;
+                const btn = e.currentTarget;
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.style.background = '#475569';
+                btn.querySelector('span').textContent = '✓ REVIVE CLAIMED';
+                window.open('https://asiafilm.org/4/f7943451430b0a3e1a3e4a51b58bc5ca', '_blank');
+                window.prepareRevivePause();
+            });
+
+            document.getElementById('restartBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                startGame();
+            });
+
+            document.getElementById('openLeaderboardGameOverBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.getElementById('leaderboardModal').classList.remove('hidden');
+                fetchLeaderboard();
+            });
 
             gameOverScreen.style.display = 'flex';
             gameOverScreen.classList.remove('opacity-0', 'pointer-events-none');
