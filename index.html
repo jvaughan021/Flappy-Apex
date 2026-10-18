@@ -185,8 +185,8 @@
                 </div>
             </div>
 
-            <!-- Game Over Screen Overlay -->
-            <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-2 bg-slate-950/85 backdrop-blur-md text-center opacity-0 pointer-events-none transition-opacity duration-300">
+            <!-- Game Over Screen Overlay (Hidden via display:none by default so it can never be clicked on start screen) -->
+            <div id="gameOverScreen" class="absolute inset-0 z-20 flex-col items-center justify-center p-2 bg-slate-950/85 backdrop-blur-md text-center opacity-0 pointer-events-none transition-opacity duration-300" style="display: none;">
                 <div class="glass-card w-full max-w-xs p-3 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[98vh] pointer-events-auto">
                     
                     <div class="flex flex-col items-center">
@@ -230,13 +230,6 @@
             </div>
         </div>
 
-        <!-- PERMANENT PERSISTENT A-ADS FOOTER -->
-        <div class="relative z-20 w-full flex-shrink-0 bg-slate-950 border-t border-slate-800/80 py-1.5 flex justify-center items-center pointer-events-auto">
-            <div id="framePersistent" style="width: 100%; max-width: 300px; margin: auto; height: auto; display: flex; justify-content: center;">
-                <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=responsive' style='border:0; padding:0; width:100%; max-width:300px; height:60px; overflow:hidden; display:block; margin:auto;'></iframe>
-            </div>
-        </div>
-
     </div>
 
     <!-- Firebase SDKs via CDN -->
@@ -274,7 +267,7 @@
             const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
             const smartLinkReviveBtn = document.getElementById('smartLinkReviveBtn');
 
-            // Safe SmartLink Revive Button handler (1 use per run, isolated click)
+            // Strictly isolated SmartLink Revive Button handler
             if (smartLinkReviveBtn) {
                 smartLinkReviveBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -472,6 +465,7 @@
             const gameOverScreen = document.getElementById('gameOverScreen');
             if (gameOverScreen) {
                 gameOverScreen.classList.add('opacity-0', 'pointer-events-none');
+                gameOverScreen.style.display = 'none';
             }
             
             if (typeof player !== 'undefined') {
@@ -933,6 +927,7 @@
             finalScoreEl.textContent = score;
             bestScoreEl.textContent = highScore;
 
+            gameOverScreen.style.display = 'flex';
             gameOverScreen.classList.remove('opacity-0', 'pointer-events-none');
             hud.classList.add('opacity-0');
 
@@ -988,13 +983,13 @@
 
             startScreen.classList.add('hidden');
             gameOverScreen.classList.add('opacity-0', 'pointer-events-none');
+            gameOverScreen.style.display = 'none';
             hud.classList.remove('opacity-0');
 
             gameState = 'PLAYING';
             sound.init();
         }
 
-        // Hook up Restart & Start buttons to reset revive status
         if (restartBtn) {
             restartBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1025,6 +1020,9 @@
                 }
             }
         });
+
+        // Ensure game over screen is hidden on load
+        gameOverScreen.style.display = 'none';
 
         loop();
     </script>
