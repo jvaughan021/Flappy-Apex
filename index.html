@@ -212,17 +212,17 @@
                         ★ NEW HIGH SCORE ★
                     </div>
 
-                    <!-- Adsterra SmartLink Rewarded Revive Button (Limited to 1 per game) -->
-                    <button id="smartLinkReviveBtn" class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer flex items-center justify-center space-x-1.5">
+                    <!-- Adsterra SmartLink Rewarded Revive Button (Limited to 1 per game, strictly isolated click handler) -->
+                    <button id="smartLinkReviveBtn" type="button" class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer flex items-center justify-center space-x-1.5">
                         <span>🎁 REVIVE (SPONSOR)</span>
                     </button>
 
                     <!-- Action Buttons -->
                     <div class="w-full space-y-1">
-                        <button id="restartBtn" class="pulse-btn w-full py-2 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer">
+                        <button id="restartBtn" type="button" class="pulse-btn w-full py-2 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer">
                             PLAY AGAIN
                         </button>
-                        <button id="openLeaderboardGameOverBtn" class="w-full py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-[10px] tracking-wider text-indigo-300 border border-indigo-500/30 active:scale-95 transition-all cursor-pointer">
+                        <button id="openLeaderboardGameOverBtn" type="button" class="w-full py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-[10px] tracking-wider text-indigo-300 border border-indigo-500/30 active:scale-95 transition-all cursor-pointer">
                             VIEW LEADERBOARD
                         </button>
                     </div>
@@ -267,13 +267,15 @@
             const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
             const smartLinkReviveBtn = document.getElementById('smartLinkReviveBtn');
 
-            // Wire up SmartLink Revive Button (1 use per run)
+            // Strictly isolated SmartLink Revive Button handler with full event cancellation
             if (smartLinkReviveBtn) {
                 smartLinkReviveBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
                     e.stopPropagation();
+                    e.stopImmediatePropagation();
                     
-                    if (typeof window.hasRevivedThisGame !== 'undefined' && window.hasRevivedThisGame) {
-                        return; // Already used this run
+                    if (window.hasRevivedThisGame) {
+                        return;
                     }
 
                     window.hasRevivedThisGame = true;
@@ -282,14 +284,14 @@
                     smartLinkReviveBtn.style.background = '#475569';
                     smartLinkReviveBtn.querySelector('span').textContent = '✓ REVIVED ALREADY';
 
-                    // Open Adsterra SmartLink in a new tab
+                    // Open Adsterra SmartLink in a new tab safely
                     window.open('https://asiafilm.org/4/f7943451430b0a3e1a3e4a51b58bc5ca', '_blank');
                     
                     // Trigger in-game revive
                     if (typeof window.reviveGamePlayer === 'function') {
                         window.reviveGamePlayer();
                     }
-                });
+                }, true); // Use capture phase to intercept before anything else
             }
 
             if (userNickname && userNickname.trim() !== '') {
@@ -473,8 +475,8 @@
             
             if (typeof player !== 'undefined') {
                 player.x = 70;
-                player.y = 320 / 2;
-                player.velocity = -4; // Gentle upward boost
+                player.y = V_HEIGHT / 2;
+                player.velocity = -4;
             }
             
             if (typeof gameState !== 'undefined') {
@@ -734,7 +736,7 @@
             }
         };
 
-        // Ensure restart button resets revive status
+        // Reset revive status when buttons are pressed
         if (restartBtn) {
             restartBtn.addEventListener('click', () => {
                 if (typeof window.resetReviveStatus === 'function') {
