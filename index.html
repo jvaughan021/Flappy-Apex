@@ -653,16 +653,17 @@
                 this.velocity = this.jumpStrength;
                 sound.playJump();
 
-                for (let i = 0; i < 6; i++) {
+                // Restored rich particle trail matching your original design
+                for (let i = 0; i < 8; i++) {
                     this.particles.push({
-                        x: this.x - 5,
+                        x: this.x + 4,
                         y: this.y + this.height / 2,
-                        vx: - (Math.random() * 2 + 1),
-                        vy: (Math.random() - 0.5) * 2,
-                        size: Math.random() * 4 + 2,
-                        color: Math.random() > 0.5 ? '#f43f5e' : '#fb923c',
+                        vx: - (Math.random() * 2.5 + 1.2),
+                        vy: (Math.random() - 0.5) * 2.5,
+                        size: Math.random() * 4.5 + 2,
+                        color: Math.random() > 0.4 ? '#f43f5e' : '#fb923c',
                         alpha: 1,
-                        decay: Math.random() * 0.05 + 0.02
+                        decay: Math.random() * 0.04 + 0.015
                     });
                 }
             },
@@ -828,25 +829,25 @@
                     let botY = (V_HEIGHT - p.bottom) * scale;
                     let botH = p.bottom * scale;
 
-                    // Restored original pipe body color (dark slate)
+                    // Original dark pipe body
                     ctx.fillStyle = '#1e2230';
                     ctx.fillRect(px, 0, pw, topH);
                     ctx.fillRect(px, botY, pw, botH);
 
-                    // Restored original pipe cap lips with neon gradient
+                    // Original vibrant gradient lips/caps
                     let capH = 24 * scale;
                     let capW = pw + 8 * scale;
                     let capX = px - 4 * scale;
 
                     let capGrad = ctx.createLinearGradient(capX, 0, capX + capW, 0);
-                    capGrad.addColorStop(0, '#6366f1');
+                    capGrad.addColorStop(0, '#f43f5e');
                     capGrad.addColorStop(0.5, '#a855f7');
-                    capGrad.addColorStop(1, '#4f46e5');
+                    capGrad.addColorStop(1, '#3b82f6');
 
                     ctx.fillStyle = capGrad;
                     // Top pipe lip
                     ctx.fillRect(capX, topH - capH, capW, capH);
-                    ctx.strokeStyle = '#818cf8';
+                    ctx.strokeStyle = '#f43f5e';
                     ctx.lineWidth = 2 * scale;
                     ctx.strokeRect(capX, topH - capH, capW, capH);
 
