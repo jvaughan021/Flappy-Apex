@@ -653,7 +653,6 @@
                 this.velocity = this.jumpStrength;
                 sound.playJump();
 
-                // Restored rich particle trail matching your original design
                 for (let i = 0; i < 8; i++) {
                     this.particles.push({
                         x: this.x + 4,
@@ -829,20 +828,25 @@
                     let botY = (V_HEIGHT - p.bottom) * scale;
                     let botH = p.bottom * scale;
 
-                    // Original dark pipe body
-                    ctx.fillStyle = '#1e2230';
+                    // Restored original translucent dark pipe body gradient
+                    let pipeBodyGradTop = ctx.createLinearGradient(px, 0, px + pw, 0);
+                    pipeBodyGradTop.addColorStop(0, 'rgba(15, 23, 42, 0.75)');
+                    pipeBodyGradTop.addColorStop(0.5, 'rgba(30, 41, 59, 0.6)');
+                    pipeBodyGradTop.addColorStop(1, 'rgba(15, 23, 42, 0.75)');
+
+                    ctx.fillStyle = pipeBodyGradTop;
                     ctx.fillRect(px, 0, pw, topH);
                     ctx.fillRect(px, botY, pw, botH);
 
-                    // Original vibrant gradient lips/caps
+                    // Original horizontal neon gradient lip matching your screenshot exactly
                     let capH = 24 * scale;
                     let capW = pw + 8 * scale;
                     let capX = px - 4 * scale;
 
                     let capGrad = ctx.createLinearGradient(capX, 0, capX + capW, 0);
-                    capGrad.addColorStop(0, '#f43f5e');
+                    capGrad.addColorStop(0, '#3b82f6');
                     capGrad.addColorStop(0.5, '#a855f7');
-                    capGrad.addColorStop(1, '#3b82f6');
+                    capGrad.addColorStop(1, '#f43f5e');
 
                     ctx.fillStyle = capGrad;
                     // Top pipe lip
