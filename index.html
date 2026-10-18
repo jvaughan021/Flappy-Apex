@@ -97,135 +97,138 @@
 
     <div id="gameContainer" class="relative w-full h-full max-w-md max-h-full sm:max-h-[920px] aspect-[9/16] bg-slate-900 shadow-2xl overflow-hidden flex flex-col justify-between sm:rounded-3xl border-0 sm:border-2 border-slate-800/80">
         
-        <!-- Game Canvas -->
-        <canvas id="gameCanvas" class="absolute inset-0 w-full h-full z-0 cursor-pointer block"></canvas>
+        <!-- Game Area Wrapper -->
+        <div class="relative w-full flex-1 overflow-hidden">
+            <!-- Game Canvas -->
+            <canvas id="gameCanvas" class="absolute inset-0 w-full h-full z-0 cursor-pointer block"></canvas>
 
-        <!-- Flash Effect Overlay -->
-        <div id="flashOverlay" class="flash-overlay"></div>
+            <!-- Flash Effect Overlay -->
+            <div id="flashOverlay" class="flash-overlay"></div>
 
-        <!-- Active Gameplay HUD -->
-        <div id="hud" class="relative z-10 p-4 flex justify-between items-center pointer-events-none transition-opacity duration-300 opacity-0">
-            <div class="flex items-center space-x-2 bg-slate-900/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-slate-700/50">
-                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Best</span>
-                <span id="hudBestScore" class="font-orbitron text-sm font-extrabold text-amber-400">0</span>
-            </div>
-            <div class="bg-slate-900/85 backdrop-blur-md px-4 py-1.5 rounded-full border border-slate-700/50">
-                <span id="hudCurrentScore" class="font-orbitron text-2xl font-black text-white">0</span>
-            </div>
-        </div>
-
-        <!-- Nickname Registration Overlay (First Launch) -->
-        <div id="nicknameScreen" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-3 bg-slate-950/90 backdrop-blur-md text-center hidden">
-            <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-3 border border-slate-700/60 shadow-2xl max-h-[98vh] overflow-y-auto">
-                <div class="inline-block px-2.5 py-0.5 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-[10px] font-bold tracking-widest uppercase">
-                    Secure Leaderboard
+            <!-- Active Gameplay HUD -->
+            <div id="hud" class="relative z-10 p-4 flex justify-between items-center pointer-events-none transition-opacity duration-300 opacity-0">
+                <div class="flex items-center space-x-2 bg-slate-900/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-slate-700/50">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Best</span>
+                    <span id="hudBestScore" class="font-orbitron text-sm font-extrabold text-amber-400">0</span>
                 </div>
-                <h2 class="font-orbitron text-base font-black text-white">CHOOSE HANDLE</h2>
-                <p class="text-[10px] text-slate-300 leading-relaxed">
-                    Pick a unique nickname to lock your global scores.
-                </p>
-                <div class="w-full space-y-1">
-                    <input type="text" id="nicknameInput" maxlength="14" placeholder="Enter nickname..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white font-orbitron text-xs text-center focus:outline-none focus:border-indigo-500 transition-colors">
-                    <p id="nicknameError" class="text-[10px] text-rose-400 font-semibold h-3"></p>
-                </div>
-
-                <button id="saveNicknameBtn" class="pulse-btn w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
-                    CLAIM HANDLE & PLAY
-                </button>
-            </div>
-        </div>
-
-        <!-- Separate Leaderboard Modal Overlay -->
-        <div id="leaderboardModal" class="absolute inset-0 z-40 flex flex-col items-center justify-center p-6 bg-slate-950/90 backdrop-blur-md text-center hidden">
-            <div class="glass-card w-full max-w-xs p-5 rounded-3xl flex flex-col items-center space-y-4 border border-slate-700/60 shadow-2xl">
-                <div class="flex flex-col items-center">
-                    <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Global Standings</span>
-                    <h2 class="font-orbitron text-2xl font-black text-white">TOP PILOTS</h2>
-                </div>
-                
-                <!-- Full Rankings Container -->
-                <div id="modalLeaderboardList" class="w-full bg-slate-900/90 rounded-2xl p-3 border border-slate-800/80 max-h-[280px] overflow-y-auto space-y-2 text-xs">
-                    <div class="text-slate-500 text-center py-4 text-xs">Loading rankings...</div>
-                </div>
-
-                <button id="closeLeaderboardBtn" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 font-orbitron font-bold text-xs tracking-wider text-slate-300 border border-slate-700/50 active:scale-95 transition-all">
-                    BACK
-                </button>
-            </div>
-        </div>
-
-        <!-- Start Screen Overlay -->
-        <div id="startScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 bg-slate-950/75 backdrop-blur-sm text-center hidden">
-            <div class="flex flex-col items-center mb-6">
-                <div class="inline-block px-3 py-1 mb-1 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-xs font-bold tracking-widest uppercase">
-                    Arcade Mobile Edition
-                </div>
-                <h1 class="font-orbitron text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-rose-500 via-purple-400 to-indigo-400 glow-text mb-0.5">
-                    FLAPPY APEX
-                </h1>
-                <p class="text-xs font-bold tracking-wide text-rose-400 mb-2">
-                    Created by Jack vaughan
-                </p>
-                <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-700/50">
-                    <span class="text-[11px] text-slate-400">Player:</span>
-                    <span id="displayNickname" class="font-orbitron text-xs font-bold text-indigo-400">---</span>
+                <div class="bg-slate-900/85 backdrop-blur-md px-4 py-1.5 rounded-full border border-slate-700/50">
+                    <span id="hudCurrentScore" class="font-orbitron text-2xl font-black text-white">0</span>
                 </div>
             </div>
 
-            <!-- Menu Action Buttons -->
-            <div class="w-full max-w-xs space-y-3">
-                <button id="startBtn" class="pulse-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-lg tracking-wider text-white shadow-xl active:scale-95 transition-transform duration-100">
-                    TAP TO PLAY
-                </button>
-                <button id="openLeaderboardStartBtn" class="w-full py-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-sm tracking-wider text-indigo-300 border border-indigo-500/30 shadow-md active:scale-95 transition-all">
-                    VIEW LEADERBOARD
-                </button>
-            </div>
-        </div>
-
-        <!-- Game Over Screen Overlay -->
-        <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-2 bg-slate-950/85 backdrop-blur-md text-center opacity-0 pointer-events-none transition-opacity duration-300">
-            <div class="glass-card w-full max-w-xs p-3 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[98vh]">
-                
-                <div class="flex flex-col items-center">
-                    <span class="text-[9px] font-bold text-rose-400 uppercase tracking-widest">Game Over</span>
-                    <h2 class="font-orbitron text-base font-black text-white">APEX CRASH</h2>
-                </div>
-
-                <!-- Score Board -->
-                <div class="w-full bg-slate-900/90 rounded-xl p-2 border border-slate-800/80 flex flex-col space-y-1">
-                    <div class="flex justify-between items-center">
-                        <span class="text-[9px] font-semibold text-slate-400 uppercase">Score</span>
-                        <span id="finalScore" class="font-orbitron text-sm font-black text-rose-400">0</span>
+            <!-- Nickname Registration Overlay (First Launch) -->
+            <div id="nicknameScreen" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-3 bg-slate-950/90 backdrop-blur-md text-center hidden">
+                <div class="glass-card w-full max-w-xs p-4 rounded-3xl flex flex-col items-center space-y-3 border border-slate-700/60 shadow-2xl max-h-[98vh] overflow-y-auto">
+                    <div class="inline-block px-2.5 py-0.5 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-[10px] font-bold tracking-widest uppercase">
+                        Secure Leaderboard
                     </div>
-                    <div class="w-full h-[1px] bg-slate-800"></div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-[9px] font-semibold text-slate-400 uppercase">Best Score</span>
-                        <span id="bestScore" class="font-orbitron text-sm font-black text-amber-400">0</span>
+                    <h2 class="font-orbitron text-base font-black text-white">CHOOSE HANDLE</h2>
+                    <p class="text-[10px] text-slate-300 leading-relaxed">
+                        Pick a unique nickname to lock your global scores.
+                    </p>
+                    <div class="w-full space-y-1">
+                        <input type="text" id="nicknameInput" maxlength="14" placeholder="Enter nickname..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white font-orbitron text-xs text-center focus:outline-none focus:border-indigo-500 transition-colors">
+                        <p id="nicknameError" class="text-[10px] text-rose-400 font-semibold h-3"></p>
                     </div>
-                </div>
 
-                <!-- High Score Record Badge -->
-                <div id="newRecordBadge" class="hidden px-2.5 py-0.5 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full text-slate-950 font-orbitron text-[8px] font-black tracking-wider uppercase shadow-lg animate-bounce">
-                    ★ NEW HIGH SCORE ★
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="w-full space-y-1">
-                    <button id="restartBtn" class="pulse-btn w-full py-2 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
-                        PLAY AGAIN
+                    <button id="saveNicknameBtn" class="pulse-btn w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
+                        CLAIM HANDLE & PLAY
                     </button>
-                    <button id="openLeaderboardGameOverBtn" class="w-full py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-[10px] tracking-wider text-indigo-300 border border-indigo-500/30 active:scale-95 transition-all">
+                </div>
+            </div>
+
+            <!-- Separate Leaderboard Modal Overlay -->
+            <div id="leaderboardModal" class="absolute inset-0 z-40 flex flex-col items-center justify-center p-6 bg-slate-950/90 backdrop-blur-md text-center hidden">
+                <div class="glass-card w-full max-w-xs p-5 rounded-3xl flex flex-col items-center space-y-4 border border-slate-700/60 shadow-2xl">
+                    <div class="flex flex-col items-center">
+                        <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Global Standings</span>
+                        <h2 class="font-orbitron text-2xl font-black text-white">TOP PILOTS</h2>
+                    </div>
+                    
+                    <!-- Full Rankings Container -->
+                    <div id="modalLeaderboardList" class="w-full bg-slate-900/90 rounded-2xl p-3 border border-slate-800/80 max-h-[280px] overflow-y-auto space-y-2 text-xs">
+                        <div class="text-slate-500 text-center py-4 text-xs">Loading rankings...</div>
+                    </div>
+
+                    <button id="closeLeaderboardBtn" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 font-orbitron font-bold text-xs tracking-wider text-slate-300 border border-slate-700/50 active:scale-95 transition-all">
+                        BACK
+                    </button>
+                </div>
+            </div>
+
+            <!-- Start Screen Overlay -->
+            <div id="startScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 bg-slate-950/75 backdrop-blur-sm text-center hidden">
+                <div class="flex flex-col items-center mb-6">
+                    <div class="inline-block px-3 py-1 mb-1 bg-indigo-500/20 rounded-full border border-indigo-500/40 text-indigo-300 text-xs font-bold tracking-widest uppercase">
+                        Arcade Mobile Edition
+                    </div>
+                    <h1 class="font-orbitron text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-rose-500 via-purple-400 to-indigo-400 glow-text mb-0.5">
+                        FLAPPY APEX
+                    </h1>
+                    <p class="text-xs font-bold tracking-wide text-rose-400 mb-2">
+                        Created by Jack vaughan
+                    </p>
+                    <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-700/50">
+                        <span class="text-[11px] text-slate-400">Player:</span>
+                        <span id="displayNickname" class="font-orbitron text-xs font-bold text-indigo-400">---</span>
+                    </div>
+                </div>
+
+                <!-- Menu Action Buttons -->
+                <div class="w-full max-w-xs space-y-3">
+                    <button id="startBtn" class="pulse-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-lg tracking-wider text-white shadow-xl active:scale-95 transition-transform duration-100">
+                        TAP TO PLAY
+                    </button>
+                    <button id="openLeaderboardStartBtn" class="w-full py-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-sm tracking-wider text-indigo-300 border border-indigo-500/30 shadow-md active:scale-95 transition-all">
                         VIEW LEADERBOARD
                     </button>
                 </div>
             </div>
+
+            <!-- Game Over Screen Overlay -->
+            <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-2 bg-slate-950/85 backdrop-blur-md text-center opacity-0 pointer-events-none transition-opacity duration-300">
+                <div class="glass-card w-full max-w-xs p-3 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[98vh]">
+                    
+                    <div class="flex flex-col items-center">
+                        <span class="text-[9px] font-bold text-rose-400 uppercase tracking-widest">Game Over</span>
+                        <h2 class="font-orbitron text-base font-black text-white">APEX CRASH</h2>
+                    </div>
+
+                    <!-- Score Board -->
+                    <div class="w-full bg-slate-900/90 rounded-xl p-2 border border-slate-800/80 flex flex-col space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[9px] font-semibold text-slate-400 uppercase">Score</span>
+                            <span id="finalScore" class="font-orbitron text-sm font-black text-rose-400">0</span>
+                        </div>
+                        <div class="w-full h-[1px] bg-slate-800"></div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[9px] font-semibold text-slate-400 uppercase">Best Score</span>
+                            <span id="bestScore" class="font-orbitron text-sm font-black text-amber-400">0</span>
+                        </div>
+                    </div>
+
+                    <!-- High Score Record Badge -->
+                    <div id="newRecordBadge" class="hidden px-2.5 py-0.5 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full text-slate-950 font-orbitron text-[8px] font-black tracking-wider uppercase shadow-lg animate-bounce">
+                        ★ NEW HIGH SCORE ★
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="w-full space-y-1">
+                        <button id="restartBtn" class="pulse-btn w-full py-2 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100">
+                            PLAY AGAIN
+                        </button>
+                        <button id="openLeaderboardGameOverBtn" class="w-full py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 font-orbitron font-bold text-[10px] tracking-wider text-indigo-300 border border-indigo-500/30 active:scale-95 transition-all">
+                            VIEW LEADERBOARD
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- PERMANENT PERSISTENT A-ADS FOOTER (Locks ad to page 24/7 for all screens & returning players) -->
-        <div class="relative z-20 w-full bg-slate-950/90 border-t border-slate-800/80 py-1 flex justify-center items-center pointer-events-auto">
-            <div id="framePersistent" style="width: 300px; margin: auto; height: auto;">
-                <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=300x250' style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
+        <!-- PERMANENT PERSISTENT A-ADS FOOTER (Fully visible, responsive, and non-blocking) -->
+        <div class="relative z-20 w-full flex-shrink-0 bg-slate-950 border-t border-slate-800/80 py-1.5 flex justify-center items-center pointer-events-auto">
+            <div id="framePersistent" style="width: 100%; max-width: 300px; margin: auto; height: auto; display: flex; justify-content: center;">
+                <iframe data-aa='2458775' src='//ad.a-ads.com/2458775/?size=responsive' style='border:0; padding:0; width:100%; max-width:300px; height:60px; overflow:hidden; display:block; margin:auto;'></iframe>
             </div>
         </div>
 
@@ -565,7 +568,7 @@
         let scale = 1;
 
         function resizeCanvas() {
-            const rect = gameContainer.getBoundingClientRect();
+            const rect = canvas.parentElement.getBoundingClientRect();
             canvas.width = rect.width;
             canvas.height = rect.height;
             scale = canvas.width / V_WIDTH;
