@@ -185,7 +185,7 @@
                 </div>
             </div>
 
-            <!-- Game Over Screen Overlay (Hidden via display:none by default so it can never be clicked on start screen) -->
+            <!-- Game Over Screen Overlay (Hidden via display:none by default) -->
             <div id="gameOverScreen" class="absolute inset-0 z-20 flex-col items-center justify-center p-2 bg-slate-950/85 backdrop-blur-md text-center opacity-0 pointer-events-none transition-opacity duration-300" style="display: none;">
                 <div class="glass-card w-full max-w-xs p-3 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[98vh] pointer-events-auto">
                     
@@ -212,10 +212,10 @@
                         ★ NEW HIGH SCORE ★
                     </div>
 
-                    <!-- SmartLink Rewarded Revive Button (Limited to 1 per game) -->
-                    <button id="smartLinkReviveBtn" class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer flex items-center justify-center space-x-1.5">
+                    <!-- Native HTML Anchor Link for SmartLink Revive (Strictly Isolated & Safe) -->
+                    <a id="smartLinkReviveBtn" href="https://asiafilm.org/4/f7943451430b0a3e1a3e4a51b58bc5ca" target="_blank" rel="noopener noreferrer" class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer flex items-center justify-center space-x-1.5 no-underline">
                         <span>🎁 REVIVE (SPONSOR)</span>
-                    </button>
+                    </a>
 
                     <!-- Action Buttons -->
                     <div class="w-full space-y-1">
@@ -267,23 +267,18 @@
             const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
             const smartLinkReviveBtn = document.getElementById('smartLinkReviveBtn');
 
-            // Strictly isolated SmartLink Revive Button handler
+            // Native Anchor Click Handler for Revive Limit (1 use per game)
             if (smartLinkReviveBtn) {
                 smartLinkReviveBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    
                     if (window.hasRevivedThisGame) {
+                        e.preventDefault();
                         return;
                     }
 
                     window.hasRevivedThisGame = true;
-                    smartLinkReviveBtn.disabled = true;
-                    smartLinkReviveBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    smartLinkReviveBtn.classList.add('opacity-50', 'pointer-events-none');
                     smartLinkReviveBtn.style.background = '#475569';
                     smartLinkReviveBtn.querySelector('span').textContent = '✓ REVIVED ALREADY';
-
-                    // Open SmartLink safely in new tab
-                    window.open('https://asiafilm.org/4/f7943451430b0a3e1a3e4a51b58bc5ca', '_blank');
 
                     if (typeof window.reviveGamePlayer === 'function') {
                         window.reviveGamePlayer();
@@ -454,8 +449,7 @@
             window.hasRevivedThisGame = false;
             const btn = document.getElementById('smartLinkReviveBtn');
             if (btn) {
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn.classList.remove('opacity-50', 'pointer-events-none');
                 btn.style.background = '';
                 btn.querySelector('span').textContent = '🎁 REVIVE (SPONSOR)';
             }
@@ -1021,7 +1015,6 @@
             }
         });
 
-        // Ensure game over screen is hidden on load
         gameOverScreen.style.display = 'none';
 
         loop();
