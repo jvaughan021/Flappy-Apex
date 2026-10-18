@@ -251,7 +251,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        let userNickname = localStorage.getItem('flappyApex_nickname') || '';
+        let userNickname = localStorage.getItem('flappyApex_nickname'] || '';
 
         window.addEventListener('DOMContentLoaded', () => {
             const nicknameScreen = document.getElementById('nicknameScreen');
@@ -267,7 +267,6 @@
             const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
             const smartLinkReviveBtn = document.getElementById('smartLinkReviveBtn');
 
-            // Strictly isolated SmartLink Revive Button handler with pause/resume support
             if (smartLinkReviveBtn) {
                 smartLinkReviveBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -282,7 +281,6 @@
                     smartLinkReviveBtn.style.background = '#475569';
                     smartLinkReviveBtn.querySelector('span').textContent = '✓ REVIVE CLAIMED';
 
-                    // Open SmartLink safely in new tab
                     window.open('https://asiafilm.org/4/f7943451430b0a3e1a3e4a51b58bc5ca', '_blank');
 
                     if (typeof window.prepareRevivePause === 'function') {
@@ -791,7 +789,7 @@
                 this.pipes = [];
                 this.spawnTimer = 0;
                 this.spawnInterval = 100;
-                this.gapSize = 175; /* Restored original wider gap size */
+                this.gapSize = 175;
             }
 
             reset() {
@@ -846,7 +844,6 @@
                     let botY = (V_HEIGHT - p.bottom) * scale;
                     let botH = p.bottom * scale;
 
-                    // Translucent dark pipe body gradient
                     let pipeBodyGradTop = ctx.createLinearGradient(px, 0, px + pw, 0);
                     pipeBodyGradTop.addColorStop(0, 'rgba(15, 23, 42, 0.75)');
                     pipeBodyGradTop.addColorStop(0.5, 'rgba(30, 41, 59, 0.6)');
@@ -856,7 +853,6 @@
                     ctx.fillRect(px, 0, pw, topH);
                     ctx.fillRect(px, botY, pw, botH);
 
-                    // Original horizontal neon gradient lip
                     let capH = 24 * scale;
                     let capW = pw + 8 * scale;
                     let capX = px - 4 * scale;
@@ -867,13 +863,11 @@
                     capGrad.addColorStop(1, '#f43f5e');
 
                     ctx.fillStyle = capGrad;
-                    // Top pipe lip
                     ctx.fillRect(capX, topH - capH, capW, capH);
                     ctx.strokeStyle = '#f43f5e';
                     ctx.lineWidth = 2 * scale;
                     ctx.strokeRect(capX, topH - capH, capW, capH);
 
-                    // Bottom pipe lip
                     ctx.fillRect(capX, botY, capW, capH);
                     ctx.strokeRect(capX, botY, capW, capH);
                 });
@@ -948,7 +942,6 @@
             finalScoreEl.textContent = score;
             bestScoreEl.textContent = highScore;
 
-            // Reset game over screen content back to original if it was modified by pause screen
             gameOverScreen.innerHTML = `
                 <div class="glass-card w-full max-w-xs p-3 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[98vh] pointer-events-auto">
                     
@@ -992,7 +985,6 @@
                 </div>
             `;
 
-            // Re-bind listeners for newly injected game over buttons
             document.getElementById('smartLinkReviveBtn').addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (window.hasRevivedThisGame) return;
@@ -1065,7 +1057,7 @@
         }
 
         function startGame() {
-            score = 0;
+            score = 0; // Fresh game starts at 0 score
             hudCurrentScore.textContent = '0';
             player.reset();
             pipeManager.reset();
