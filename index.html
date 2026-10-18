@@ -182,7 +182,7 @@
                 </div>
             </div>
 
-            <!-- Game Over Screen Overlay -->
+            <!-- Game Over Screen Overlay (Hidden completely by default via display:none logic via parent/opacity states) -->
             <div id="gameOverScreen" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-2 bg-slate-950/85 backdrop-blur-md text-center opacity-0 pointer-events-none transition-opacity duration-300">
                 <div class="glass-card w-full max-w-xs p-3 rounded-3xl flex flex-col items-center space-y-2 border border-slate-700/60 shadow-2xl overflow-y-auto max-h-[98vh] pointer-events-auto">
                     
@@ -207,10 +207,10 @@
                         ★ NEW HIGH SCORE ★
                     </div>
 
-                    <!-- NATIVE HTML ANCHOR TAG REVIVE BUTTON (100% Safe HTML Link) -->
-                    <a id="smartLinkReviveBtn" href="https://asiafilm.org/4/f7943451430b0a3e1a3e4a51b58bc5ca" target="_blank" rel="noopener noreferrer" class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer flex items-center justify-center space-x-1.5 no-underline">
+                    <!-- SAFE REVIVE BUTTON (Controlled via JavaScript, cannot fire on start screen) -->
+                    <button id="smartLinkReviveBtn" type="button" class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer flex items-center justify-center space-x-1.5">
                         <span>🎁 REVIVE (SPONSOR)</span>
-                    </a>
+                    </button>
 
                     <div class="w-full space-y-1">
                         <button id="restartBtn" type="button" class="pulse-btn w-full py-2 rounded-xl bg-gradient-to-r from-rose-500 via-indigo-600 to-purple-600 font-orbitron font-extrabold text-xs tracking-wider text-white shadow-lg active:scale-95 transition-transform duration-100 cursor-pointer">
@@ -261,17 +261,23 @@
             const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
             const smartLinkReviveBtn = document.getElementById('smartLinkReviveBtn');
 
+            // Strictly isolated JS click handler for the revive button
             if (smartLinkReviveBtn) {
                 smartLinkReviveBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
                     if (window.hasRevivedThisGame) {
-                        e.preventDefault();
                         return;
                     }
 
                     window.hasRevivedThisGame = true;
-                    smartLinkReviveBtn.classList.add('opacity-50', 'pointer-events-none');
+                    smartLinkReviveBtn.disabled = true;
+                    smartLinkReviveBtn.classList.add('opacity-50', 'cursor-not-allowed');
                     smartLinkReviveBtn.style.background = '#475569';
                     smartLinkReviveBtn.querySelector('span').textContent = '✓ REVIVED ALREADY';
+
+                    // Open Adsterra SmartLink safely
+                    window.open('https://asiafilm.org/4/f7943451430b0a3e1a3e4a51b58bc5ca', '_blank');
 
                     if (typeof window.reviveGamePlayer === 'function') {
                         window.reviveGamePlayer();
@@ -443,7 +449,8 @@
             window.hasRevivedThisGame = false;
             const btn = document.getElementById('smartLinkReviveBtn');
             if (btn) {
-                btn.classList.remove('opacity-50', 'pointer-events-none');
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
                 btn.style.background = '';
                 btn.querySelector('span').textContent = '🎁 REVIVE (SPONSOR)';
             }
@@ -453,6 +460,7 @@
             const gameOverScreen = document.getElementById('gameOverScreen');
             if (gameOverScreen) {
                 gameOverScreen.classList.add('opacity-0', 'pointer-events-none');
+                gameOverScreen.style.display = 'none'; // Completely hide from layout clicks
             }
             
             if (typeof player !== 'undefined') {
@@ -703,6 +711,7 @@
             finalScoreEl.textContent = score;
             bestScoreEl.textContent = highScore;
 
+            gameOverScreen.style.display = 'flex'; // Make visible in layout
             gameOverScreen.classList.remove('opacity-0', 'pointer-events-none');
             hud.classList.add('opacity-0');
 
@@ -721,7 +730,6 @@
 
             player.update();
 
-            // Floor/Ceiling collision
             if (player.y + player.height >= V_HEIGHT - 40 || player.y <= 0) {
                 triggerGameOver();
             }
@@ -729,7 +737,6 @@
             for (let i = pipes.length - 1; i >= 0; i--) {
                 pipes[i].x -= 2.8;
 
-                // Collision detection
                 if (
                     player.x < pipes[i].x + 52 &&
                     player.x + player.width > pipes[i].x &&
@@ -756,11 +763,9 @@
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Background grid / stars
             ctx.fillStyle = '#0f172a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Pipes
             pipes.forEach(pipe => {
                 const pipeWidth = 52 * scale;
                 const topH = pipe.top * scale;
@@ -772,7 +777,6 @@
                 ctx.fillRect(pipeX, (V_HEIGHT - pipe.bottom) * scale, pipeWidth, botH);
             });
 
-            // Draw Floor
             ctx.fillStyle = '#1e293b';
             ctx.fillRect(0, (V_HEIGHT - 40) * scale, canvas.width, 40 * scale);
 
@@ -795,13 +799,13 @@
 
             startScreen.classList.add('hidden');
             gameOverScreen.classList.add('opacity-0', 'pointer-events-none');
+            gameOverScreen.style.display = 'none'; // Completely hide layout element
             hud.classList.remove('opacity-0');
 
             gameState = 'PLAYING';
             sound.init();
         }
 
-        // Input Listeners
         window.addEventListener('pointerdown', (e) => {
             if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
             if (gameState === 'PLAYING') {
@@ -830,6 +834,9 @@
                 startGame();
             });
         }
+
+        // Hide game over screen initially
+        gameOverScreen.style.display = 'none';
 
         gameLoop();
     </script>
